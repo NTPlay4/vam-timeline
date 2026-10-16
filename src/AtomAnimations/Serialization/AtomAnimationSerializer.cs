@@ -37,6 +37,7 @@ namespace VamTimeline
             animationEditContext.snap = DeserializeFloat(animationEditContextJSON["Snap"], 0.1f);
             animationEditContext.locked = DeserializeBool(animationEditContextJSON["Locked"], false);
             animationEditContext.showPaths = DeserializeBool(animationEditContextJSON["ShowPaths"], false);
+            animationEditContext.zoomDraggable = DeserializeBool(animationEditContextJSON["ZoomDraggable"], true);
         }
 
         public void DeserializeAnimation(AtomAnimation animation, JSONClass animationJSON)
@@ -516,6 +517,7 @@ namespace VamTimeline
                 { "Snap", animationEditContext.snap.ToString(CultureInfo.InvariantCulture) },
                 { "Locked", animationEditContext.locked ? "1" : "0" },
                 { "ShowPaths", animationEditContext.showPaths ? "1" : "0" },
+                { "ZoomDraggable", animationEditContext.zoomDraggable ? "1" : "0" },
             };
             return animationEditContextJSON;
         }

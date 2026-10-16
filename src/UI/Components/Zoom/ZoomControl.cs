@@ -76,6 +76,10 @@ namespace VamTimeline
             else
                 _mode = ZoomStateModes.MoveMode;
 
+            // Only the two end handles are disabled when the setting is off; dragging elsewhere still moves the range.
+            if (animationEditContext == null || !animationEditContext.zoomDraggable)
+                _mode = ZoomStateModes.MoveMode;
+
             graphics.mode = _mode;
             graphics.SetVerticesDirty();
         }

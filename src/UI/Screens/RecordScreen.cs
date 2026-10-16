@@ -48,29 +48,29 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             prefabFactory.CreateSpacer();
 
-            prefabFactory.CreateHeader("Record options", 1);
+            prefabFactory.CreateHeader("录制选项", 1);
 
-            _recordExtendsLength = new JSONStorableBool("Record extends length", false);
+            _recordExtendsLength = new JSONStorableBool("录制延长长度", false);
             prefabFactory.CreateToggle(_recordExtendsLength);
 
             var recordTimeModeJSON = new JSONStorableStringChooser(
-                "Time mode",
+                "时间模式",
                 new List<string> { TimeModes.RealTime.ToString(), TimeModes.UnityTime.ToString() },
                 RecordScreenSettings.singleton.timeMode.defaultValue.ToString(),
-                "Time mode"
+                "时间模式"
             )
             {
-                displayChoices = new List<string> { "Real time (better timing)", "Game time (better sync with anim. patterns)" },
+                displayChoices = new List<string> { "实时(计时更好)", "游戏时间(与动画模式同步更好)" },
                 valNoCallback = RecordScreenSettings.singleton.timeMode.value.ToString(),
                 setCallbackFunction = val => RecordScreenSettings.singleton.timeMode.value = int.Parse(val)
             };
             prefabFactory.CreatePopup(recordTimeModeJSON, false, false);
 
-            var recordInJSON = new JSONStorableFloat("Record delay timer", RecordScreenSettings.singleton.delayTimer.defaultValue, 0f, 30f, false)
+            var recordInJSON = new JSONStorableFloat("录制延迟计时", RecordScreenSettings.singleton.delayTimer.defaultValue, 0f, 30f, false)
             {
                 valNoCallback = RecordScreenSettings.singleton.delayTimer.value
             };
@@ -82,14 +82,14 @@ namespace VamTimeline
             };
             prefabFactory.CreateSlider(recordInJSON);
 
-            var hideMenuDuringRecording = new JSONStorableBool("Hide menu during recording", RecordScreenSettings.singleton.hideMenu.defaultValue)
+            var hideMenuDuringRecording = new JSONStorableBool("录制时隐藏菜单", RecordScreenSettings.singleton.hideMenu.defaultValue)
             {
                 valNoCallback = RecordScreenSettings.singleton.hideMenu.value,
                 setCallbackFunction = val => RecordScreenSettings.singleton.hideMenu.value = val
             };
             prefabFactory.CreateToggle(hideMenuDuringRecording);
 
-            var showStartMarkers = new JSONStorableBool("Show start/next markers", RecordScreenSettings.singleton.showStartMarkers.defaultValue)
+            var showStartMarkers = new JSONStorableBool("显示开始 / 下一个标记", RecordScreenSettings.singleton.showStartMarkers.defaultValue)
             {
                 valNoCallback = RecordScreenSettings.singleton.showStartMarkers.value,
                 setCallbackFunction = val => RecordScreenSettings.singleton.showStartMarkers.value = val
@@ -97,7 +97,7 @@ namespace VamTimeline
             prefabFactory.CreateToggle(showStartMarkers);
 
             FreeControllerV3AnimationTarget raycastTarget = null;
-            _useCameraRaycast = new JSONStorableStringChooser("Use camera raycast on", new List<string>(), "", "Use camera raycast on")
+            _useCameraRaycast = new JSONStorableStringChooser("摄像机射线检测目标", new List<string>(), "", "摄像机射线检测目标")
             {
                 valNoCallback = _previousUseCameraRaycast
             };
@@ -122,7 +122,7 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
             prefabFactory.CreateHeader("Record", 1);
-            prefabFactory.CreateHeader("Note: Select targets to record", 2);
+            prefabFactory.CreateHeader("注意:请选择要录制的目标", 2);
             _recordButton = prefabFactory.CreateButton($"Start recording in {RecordScreenSettings.singleton.delayTimer.value}...");
             _recordButton.button.onClick.AddListener(() => SuperController.singleton.StartCoroutine(OnRecordCo(
                 int.Parse(recordTimeModeJSON.val),
@@ -133,7 +133,7 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
 
-            CreateChangeScreenButton("<i>Go to <b>reduce</b> screen...</i>", ReduceScreen.ScreenName);
+            CreateChangeScreenButton("<i>前往<b>精简</b>界面...</i>", ReduceScreen.ScreenName);
 
             animationEditContext.animation.animatables.onTargetsSelectionChanged.AddListener(OnTargetsSelectionChanged);
             SyncAnimationFields();

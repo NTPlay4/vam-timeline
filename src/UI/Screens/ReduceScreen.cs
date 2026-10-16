@@ -61,13 +61,13 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             prefabFactory.CreateSpacer();
 
-            _backupUI = prefabFactory.CreateButton("Backup");
+            _backupUI = prefabFactory.CreateButton("备份");
             _backupUI.button.onClick.AddListener(TakeBackup);
-            _restoreUI = prefabFactory.CreateButton("Restore");
+            _restoreUI = prefabFactory.CreateButton("恢复");
             _restoreUI.button.onClick.AddListener(RestoreBackup);
 
             _restoreUI.button.interactable = HasBackup(); if (HasBackup()) _restoreUI.label = $"Restore [{AtomAnimationBackup.singleton.backupTime}]";
@@ -80,7 +80,7 @@ namespace VamTimeline
             _reduceUI.button.onClick.AddListener(Reduce);
             _reduceUI.buttonColor = Color.green;
 
-            CreateChangeScreenButton("<i>Go to <b>record</b> screen...</i>", RecordScreen.ScreenName);
+            CreateChangeScreenButton("<i>前往<b>录制</b>界面...</i>", RecordScreen.ScreenName);
 
             animationEditContext.animation.animatables.onTargetsSelectionChanged.AddListener(OnTargetsSelectionChanged);
             OnTargetsSelectionChanged();
@@ -88,43 +88,43 @@ namespace VamTimeline
 
         private void CreateReduceSettingsUI()
         {
-            _roundJSON = new JSONStorableBool("Round key time to fps", ReduceScreenSettings.singleton.roundKeyTimeToFPS.defaultValue)
+            _roundJSON = new JSONStorableBool("关键帧时间取整到帧率", ReduceScreenSettings.singleton.roundKeyTimeToFPS.defaultValue)
             {
                 valNoCallback = ReduceScreenSettings.singleton.roundKeyTimeToFPS.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.roundKeyTimeToFPS.value = val
             };
 
-            _maxFramesPerSecondJSON = new JSONStorableFloat("Max frames per second", ReduceScreenSettings.singleton.maxFPS.defaultValue, 1f, 50f)
+            _maxFramesPerSecondJSON = new JSONStorableFloat("每秒最大帧数", ReduceScreenSettings.singleton.maxFPS.defaultValue, 1f, 50f)
             {
                 valNoCallback = ReduceScreenSettings.singleton.maxFPS.value,
                 setCallbackFunction = val => _maxFramesPerSecondJSON.valNoCallback = ReduceScreenSettings.singleton.maxFPS.value = (int)Mathf.Round(val)
             };
 
-            _removeFlatSectionsKeyframes = new JSONStorableBool("Remove flat sections", ReduceScreenSettings.singleton.removeFlatSections.defaultValue)
+            _removeFlatSectionsKeyframes = new JSONStorableBool("移除平坦区段", ReduceScreenSettings.singleton.removeFlatSections.defaultValue)
             {
                 valNoCallback = ReduceScreenSettings.singleton.removeFlatSections.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.removeFlatSections.value = val
             };
 
-            _simplifyKeyframes = new JSONStorableBool("Simplify keyframes", ReduceScreenSettings.singleton.removeFlatSections.defaultValue)
+            _simplifyKeyframes = new JSONStorableBool("简化关键帧", ReduceScreenSettings.singleton.removeFlatSections.defaultValue)
             {
                 valNoCallback = ReduceScreenSettings.singleton.simplifyKeyframes.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.simplifyKeyframes.value = val
             };
 
-            _minDistanceJSON = new JSONStorableFloat("Minimum meaningful distance", ReduceScreenSettings.singleton.minDistance.defaultValue, 0f, 1f, false)
+            _minDistanceJSON = new JSONStorableFloat("最小有效距离", ReduceScreenSettings.singleton.minDistance.defaultValue, 0f, 1f, false)
             {
                 valNoCallback = ReduceScreenSettings.singleton.minDistance.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.minDistance.value = val
             };
 
-            _minRotationJSON = new JSONStorableFloat("Minimum meaningful rotation (dot)", ReduceScreenSettings.singleton.minRotation.defaultValue, 0f, 1f)
+            _minRotationJSON = new JSONStorableFloat("最小有效旋转(点积)", ReduceScreenSettings.singleton.minRotation.defaultValue, 0f, 1f)
             {
                 valNoCallback = ReduceScreenSettings.singleton.minRotation.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.minRotation.value = val
             };
 
-            _minFloatParamRangeRatioJSON = new JSONStorableFloat("Minimum meaningful float range ratio", ReduceScreenSettings.singleton.minFloatRange.defaultValue, 0f, 1f)
+            _minFloatParamRangeRatioJSON = new JSONStorableFloat("最小有效浮点范围比", ReduceScreenSettings.singleton.minFloatRange.defaultValue, 0f, 1f)
             {
                 valNoCallback = ReduceScreenSettings.singleton.minFloatRange.value,
                 setCallbackFunction = val => ReduceScreenSettings.singleton.minFloatRange.value = val
@@ -156,7 +156,7 @@ namespace VamTimeline
                 RestoreBackup();
 
             _reduceUI.button.interactable = false;
-            _reduceUI.label = "Please be patient...";
+            _reduceUI.label = "请耐心等待...";
             var settings = new ReduceSettings
             {
                 fps = (int)_maxFramesPerSecondJSON.val,

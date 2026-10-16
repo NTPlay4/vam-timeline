@@ -21,7 +21,7 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", AnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", AnimationsScreen.ScreenName);
 
             InitAnimationsListUI();
 
@@ -47,7 +47,7 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
 
-            CreateChangeScreenButton("<i><b>Create</b> anims/layers/segments...</i>", AddAnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<i><b>创建</b>动画 / 层 / 片段...</i>", AddAnimationsScreen.ScreenName);
 
             RefreshAnimationsList();
 
@@ -56,22 +56,22 @@ namespace VamTimeline
 
         private void InitAnimationsListUI()
         {
-            _animationsListJSON = new JSONStorableString("Animations list", "");
+            _animationsListJSON = new JSONStorableString("动画列表", "");
             prefabFactory.CreateTextField(_animationsListJSON);
         }
 
         private void InitReorderAnimationsUI()
         {
-            var moveAnimUpUI = prefabFactory.CreateButton("Reorder animation (move up)");
+            var moveAnimUpUI = prefabFactory.CreateButton("动画顺序上移");
             moveAnimUpUI.button.onClick.AddListener(ReorderAnimationMoveUp);
 
-            var moveAnimDownUI = prefabFactory.CreateButton("Reorder animation (move down)");
+            var moveAnimDownUI = prefabFactory.CreateButton("动画顺序下移");
             moveAnimDownUI.button.onClick.AddListener(ReorderAnimationMoveDown);
         }
 
         private void InitDeleteAnimationsUI()
         {
-            _deleteAnimationUI = prefabFactory.CreateButton("Delete animation");
+            _deleteAnimationUI = prefabFactory.CreateButton("删除动画");
             _deleteAnimationUI.button.onClick.AddListener(DeleteAnimation);
             _deleteAnimationUI.buttonColor = Color.red;
             _deleteAnimationUI.textColor = Color.white;
@@ -79,10 +79,10 @@ namespace VamTimeline
 
         private void InitReorderLayersUI()
         {
-            var moveAnimUpUI = prefabFactory.CreateButton("Reorder layer (move up)");
+            var moveAnimUpUI = prefabFactory.CreateButton("层顺序上移");
             moveAnimUpUI.button.onClick.AddListener(ReorderLayerMoveUp);
 
-            var moveAnimDownUI = prefabFactory.CreateButton("Reorder layer (move down)");
+            var moveAnimDownUI = prefabFactory.CreateButton("层顺序下移");
             moveAnimDownUI.button.onClick.AddListener(ReorderLayerMoveDown);
         }
 
@@ -94,7 +94,7 @@ namespace VamTimeline
 
         private void InitDeleteLayerUI()
         {
-            _deleteLayerUI = prefabFactory.CreateButton("Delete layer");
+            _deleteLayerUI = prefabFactory.CreateButton("删除层");
             _deleteLayerUI.button.onClick.AddListener(DeleteLayer);
             _deleteLayerUI.buttonColor = Color.red;
             _deleteLayerUI.textColor = Color.white;
@@ -102,16 +102,16 @@ namespace VamTimeline
 
         private void InitReorderSegmentsUI()
         {
-            var moveAnimUpUI = prefabFactory.CreateButton("Reorder segment (move up)");
+            var moveAnimUpUI = prefabFactory.CreateButton("片段顺序上移");
             moveAnimUpUI.button.onClick.AddListener(ReorderSegmentMoveUp);
 
-            var moveAnimDownUI = prefabFactory.CreateButton("Reorder segment (move down)");
+            var moveAnimDownUI = prefabFactory.CreateButton("片段顺序下移");
             moveAnimDownUI.button.onClick.AddListener(ReorderSegmentMoveDown);
         }
 
         private void InitDeleteSegmentUI()
         {
-            _deleteSegmentUI = prefabFactory.CreateButton("Delete segment");
+            _deleteSegmentUI = prefabFactory.CreateButton("删除片段");
             _deleteSegmentUI.button.onClick.AddListener(DeleteSegment);
             _deleteSegmentUI.buttonColor = Color.red;
             _deleteSegmentUI.textColor = Color.white;
@@ -119,7 +119,7 @@ namespace VamTimeline
 
         private void InitSyncInAllAtomsUI()
         {
-            var syncInAllAtoms = prefabFactory.CreateButton("Create/sync in all atoms");
+            var syncInAllAtoms = prefabFactory.CreateButton("在所有人物上创建 / 同步");
             syncInAllAtoms.button.onClick.AddListener(SyncInAllAtoms);
         }
 
@@ -151,7 +151,7 @@ namespace VamTimeline
 
         private void DeleteAnimation()
         {
-            prefabFactory.CreateConfirm("Delete current animation", DeleteAnimationConfirm);
+            prefabFactory.CreateConfirm("删除当前动画", DeleteAnimationConfirm);
         }
 
         private void DeleteAnimationConfirm()
@@ -213,7 +213,7 @@ namespace VamTimeline
 
         private void DeleteLayer()
         {
-            prefabFactory.CreateConfirm("Delete current layer", DeleteLayerConfirm);
+            prefabFactory.CreateConfirm("删除当前层", DeleteLayerConfirm);
         }
 
         private void DeleteLayerConfirm()
@@ -260,7 +260,7 @@ namespace VamTimeline
 
         private void DeleteSegment()
         {
-            prefabFactory.CreateConfirm("Delete current segment", DeleteSegmentConfirm);
+            prefabFactory.CreateConfirm("删除当前片段", DeleteSegmentConfirm);
         }
 
         private void DeleteSegmentConfirm()
@@ -332,7 +332,7 @@ namespace VamTimeline
                     if (segment.Key == current.animationSegmentId) sb.Append("<b>");
                     string segmentLabel;
                     if (segment.Key == AtomAnimationClip.SharedAnimationSegmentId)
-                        segmentLabel = "[Shared]";
+                        segmentLabel = "[共享]";
                     else if (segment.Key == AtomAnimationClip.NoneAnimationSegmentId)
                         segmentLabel = "Animations";
                     else

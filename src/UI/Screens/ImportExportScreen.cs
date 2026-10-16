@@ -10,13 +10,13 @@ namespace VamTimeline
     {
         private const string _saveExt = "json";
         private const string _saveFolder = "Saves\\PluginData\\animations";
-        private const string _exportCurrentAnimation = "Current animation";
-        private const string _exportAllAnimations = "All animations";
-        private const string _exportCurrentAnimationAllLayers = "Current animation (all layers)";
-        private const string _exportCurrentLayer = "Current layer";
-        private const string _exportCurrentSegment = "Current segment";
-        private const string _exportAllSegments = "All segments except the shared segment";
-        private const string _exportEverything = "All segments including the shared segment";
+        private const string _exportCurrentAnimation = "当前动画";
+        private const string _exportAllAnimations = "全部动画";
+        private const string _exportCurrentAnimationAllLayers = "当前动画(所有层)";
+        private const string _exportCurrentLayer = "当前层";
+        private const string _exportCurrentSegment = "当前片段";
+        private const string _exportAllSegments = "除共享片段外的所有片段";
+        private const string _exportEverything = "包含共享片段的所有片段";
 
         public const string ScreenName = "Import / Export";
 
@@ -29,34 +29,34 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             prefabFactory.CreateSpacer();
 
-            prefabFactory.CreateHeader("Import", 1);
+            prefabFactory.CreateHeader("导入", 1);
 
             InitImportUI();
 
             prefabFactory.CreateSpacer();
 
-            prefabFactory.CreateHeader("Export", 1);
+            prefabFactory.CreateHeader("导出", 1);
 
             InitExportUI();
         }
 
         private void InitImportUI()
         {
-            var importUI = prefabFactory.CreateButton("Import animation(s)");
+            var importUI = prefabFactory.CreateButton("导入动画");
             importUI.button.onClick.AddListener(Import);
         }
 
         private void InitExportUI()
         {
             _exportIncludeJSON = new JSONStorableStringChooser(
-                "Include",
+                "包含",
                 new List<string>(),
                 "",
-                "Include", (string _) => SyncExportPose()
+                "包含", (string _) => SyncExportPose()
             )
             {
                 isStorable = false
@@ -64,10 +64,10 @@ namespace VamTimeline
             SyncExportInclude();
             prefabFactory.CreatePopup(_exportIncludeJSON, true, true, 800f);
 
-            _exportPoseJSON = new JSONStorableBool("Include Pose", true);
+            _exportPoseJSON = new JSONStorableBool("包含姿势", true);
             prefabFactory.CreateToggle(_exportPoseJSON);
 
-            var exportUI = prefabFactory.CreateButton("Export");
+            var exportUI = prefabFactory.CreateButton("导出");
             exportUI.button.onClick.AddListener(Export);
         }
 
@@ -96,7 +96,7 @@ namespace VamTimeline
                 FileManagerSecure.CreateDirectory(_saveFolder);
                 #endif
                 var fileBrowserUI = SuperController.singleton.fileBrowserUI;
-                fileBrowserUI.SetTitle("Export animation");
+                fileBrowserUI.SetTitle("导出动画");
                 fileBrowserUI.fileRemovePrefix = null;
                 fileBrowserUI.hideExtension = false;
                 fileBrowserUI.keepOpen = false;

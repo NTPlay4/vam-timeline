@@ -9,8 +9,8 @@ namespace VamTimeline
     public class SequencingScreen : ScreenBase
     {
         public const string ScreenName = "Sequence";
-        private const string _noNextAnimation = "[None]";
-        private const string _animationSetAuto = "[Sync with other layers by name]";
+        private const string _noNextAnimation = "[无]";
+        private const string _animationSetAuto = "[按名称与其他层同步]";
 
         public override string screenId => ScreenName;
 
@@ -37,7 +37,7 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            prefabFactory.CreateHeader("Options", 1);
+            prefabFactory.CreateHeader("选项", 1);
             InitSequenceMasterUI();
             InitAutoPlayUI();
             InitBlendUI();
@@ -45,7 +45,7 @@ namespace VamTimeline
             InitPreserveLoopsUI();
             InitUninterruptibleUI();
 
-            prefabFactory.CreateHeader("Sequencing", 1);
+            prefabFactory.CreateHeader("序列", 1);
             InitSequenceUI();
             InitPreventEnterGroupExit();
             RandomizeWeightUI();
@@ -58,7 +58,7 @@ namespace VamTimeline
             prefabFactory.CreateHeader("Transition (auto keyframes)", 1);
             InitTransitionUI();
 
-            prefabFactory.CreateHeader("Fading (VAMOverlays)", 1);
+            prefabFactory.CreateHeader("淡入淡出(VAMOverlays)", 1);
             InitFadeUI();
             InitOverlaysUI();
 
@@ -69,7 +69,7 @@ namespace VamTimeline
 
         private void InitSequenceMasterUI()
         {
-            _masterJSON = new JSONStorableBool("Master (atom controls others)", false, val =>
+            _masterJSON = new JSONStorableBool("主控(该人物控制其他人物)", false, val =>
             {
                 animation.master = val;
             })
@@ -81,7 +81,7 @@ namespace VamTimeline
 
         private void InitAutoPlayUI()
         {
-            _autoPlayJSON = new JSONStorableBool("Auto play on load", false, val =>
+            _autoPlayJSON = new JSONStorableBool("载入时自动播放", false, val =>
             {
                 foreach (var c in currentLayer.Where(c => c != current))
                     c.autoPlay = false;
@@ -95,10 +95,10 @@ namespace VamTimeline
 
         private void InitSequenceUI()
         {
-            _nextAnimationJSON = new JSONStorableStringChooser("Play next", GetEligibleNextAnimations(), "", "Play next", (string val) => SyncPlayNext());
+            _nextAnimationJSON = new JSONStorableStringChooser("播放下一个", GetEligibleNextAnimations(), "", "播放下一个", (string val) => SyncPlayNext());
             prefabFactory.CreatePopup(_nextAnimationJSON, true, true, 360f);
 
-            _nextAnimationTimeJSON = new JSONStorableFloat("Play next in (seconds)", 0f, (float val) => SyncPlayNext(), 0f, 60f, false)
+            _nextAnimationTimeJSON = new JSONStorableFloat("下一个在(秒)后播放", 0f, (float val) => SyncPlayNext(), 0f, 60f, false)
             {
                 valNoCallback = current.nextAnimationTime
             };
@@ -108,7 +108,7 @@ namespace VamTimeline
 
         private void InitPreventEnterGroupExit()
         {
-            _nextAnimationPreventGroupExitJSON = new JSONStorableBool("Prevent selecting exit anim", false, val =>
+            _nextAnimationPreventGroupExitJSON = new JSONStorableBool("阻止选择退出动画", false, val =>
             {
                 current.nextAnimationPreventGroupExit = val;
             })
@@ -120,13 +120,13 @@ namespace VamTimeline
 
         private void RandomizeWeightUI()
         {
-            _nextAnimationRandomizeWeightJSON = new JSONStorableFloat("Random group weight", 1f, val => current.nextAnimationRandomizeWeight = Mathf.Max(0, val), 0f, 1f, false);
+            _nextAnimationRandomizeWeightJSON = new JSONStorableFloat("随机分组权重", 1f, val => current.nextAnimationRandomizeWeight = Mathf.Max(0, val), 0f, 1f, false);
             prefabFactory.CreateSlider(_nextAnimationRandomizeWeightJSON);
         }
 
         private void InitUninterruptibleUI()
         {
-            _uninterruptible = new JSONStorableBool("Prevent trigger interruptions", current.uninterruptible, val =>
+            _uninterruptible = new JSONStorableBool("阻止触发器打断", current.uninterruptible, val =>
             {
                 foreach (var clip in animation.index.ByName(current.animationSegment, current.animationName))
                     clip.uninterruptible = val;
@@ -136,21 +136,21 @@ namespace VamTimeline
 
         private void InitBlendUI()
         {
-            _blendDurationJSON = new JSONStorableFloat("Blend-in duration", AtomAnimationClip.DefaultBlendDuration, UpdateBlendDuration, 0f, 5f, false);
+            _blendDurationJSON = new JSONStorableFloat("混入时长", AtomAnimationClip.DefaultBlendDuration, UpdateBlendDuration, 0f, 5f, false);
             var blendDurationUI = prefabFactory.CreateSlider(_blendDurationJSON);
             blendDurationUI.valueFormat = "F3";
         }
 
         private void InitTimeOffsetUI()
         {
-            _timeOffsetJSON = new JSONStorableFloat("Time offset", 0f, val => current.timeOffset = val, -1f, 1f, false);
+            _timeOffsetJSON = new JSONStorableFloat("时间偏移", 0f, val => current.timeOffset = val, -1f, 1f, false);
             var timeOffsetUI = prefabFactory.CreateSlider(_timeOffsetJSON);
             timeOffsetUI.valueFormat = "F3";
         }
 
         private void InitPreserveLoopsUI()
         {
-            _preserveLoopsJSON = new JSONStorableBool("Preserve loops / length", true, val =>
+            _preserveLoopsJSON = new JSONStorableBool("保留循环 / 长度", true, val =>
             {
                 if (current.loop)
                     current.preserveLoops = val;
@@ -178,7 +178,7 @@ namespace VamTimeline
 
         private void InitRandomizeLengthUI()
         {
-            _randomizeRangeJSON = new JSONStorableFloat("Add random time range", 0f, (float _) =>
+            _randomizeRangeJSON = new JSONStorableFloat("添加随机时间范围", 0f, (float _) =>
             {
                 if (_randomizeRangeJSON.val < 0) _randomizeRangeJSON.valNoCallback = 0f;
                 SyncPlayNext();
@@ -192,29 +192,29 @@ namespace VamTimeline
 
         private void InitPreviewUI()
         {
-            _nextAnimationPreviewJSON = new JSONStorableString("Next preview", "");
+            _nextAnimationPreviewJSON = new JSONStorableString("下一个预览", "");
             var nextAnimationResultUI = prefabFactory.CreateTextField(_nextAnimationPreviewJSON);
             nextAnimationResultUI.height = 50f;
         }
 
         private void InitAnimationSetUI()
         {
-            _animationSetJSON = new JSONStorableString("Anim set (sync across layers)", "", val => current.animationSet = val != _animationSetAuto && !string.IsNullOrEmpty(val) ? val : null);
+            _animationSetJSON = new JSONStorableString("动画组(跨层同步)", "", val => current.animationSet = val != _animationSetAuto && !string.IsNullOrEmpty(val) ? val : null);
             prefabFactory.CreateTextInput(_animationSetJSON);
         }
 
         private void InitTransitionUI()
         {
-            _transitionPreviousJSON = new JSONStorableBool("Sync first frame with previous", false, ChangeTransitionPrevious);
+            _transitionPreviousJSON = new JSONStorableBool("首帧与上一个同步", false, ChangeTransitionPrevious);
             prefabFactory.CreateToggle(_transitionPreviousJSON);
 
-            _transitionNextJSON = new JSONStorableBool("Sync last frame with next", false, ChangeTransitionNext);
+            _transitionNextJSON = new JSONStorableBool("末帧与下一个同步", false, ChangeTransitionNext);
             prefabFactory.CreateToggle(_transitionNextJSON);
         }
 
         private void InitFadeUI()
         {
-            _fadeOnTransition = new JSONStorableBool("Fade on transitions", false, val => current.fadeOnTransition = val);
+            _fadeOnTransition = new JSONStorableBool("转场时淡入淡出", false, val => current.fadeOnTransition = val);
             var fadeOnTransitionToggle = prefabFactory.CreateToggle(_fadeOnTransition);
             fadeOnTransitionToggle.toggle.interactable = animation.fadeManager != null;
         }
@@ -223,7 +223,7 @@ namespace VamTimeline
         private void InitOverlaysUI()
         {
             UIDynamicSlider blackTimeSlider = null;
-            var blackTime = new JSONStorableFloat("Black time (global)", 0.5f, val =>
+            var blackTime = new JSONStorableFloat("黑场时间(全局)", 0.5f, val =>
             {
                 if (animation.fadeManager != null)
                     animation.fadeManager.blackTime = val;
@@ -231,7 +231,7 @@ namespace VamTimeline
             {
                 valNoCallback = animation.fadeManager?.blackTime ?? 0.5f
             };
-            var atomSelector = new JSONStorableStringChooser("Overlays (global)", new List<string>(), "", "Overlays", val =>
+            var atomSelector = new JSONStorableStringChooser("叠加层(全局)", new List<string>(), "", "Overlays", val =>
             {
                 if (string.IsNullOrEmpty(val))
                 {
@@ -259,7 +259,7 @@ namespace VamTimeline
                 atomSelector.choices = new List<string> { "" }.Concat(
                     SuperController.singleton.GetAtoms()
                         .Where(a => a.type == "Empty")
-                        .Where(a => a.GetStorableIDs().Select(a.GetStorableByID).Any(s => s.IsAction("Start Fade In")))
+                        .Where(a => a.GetStorableIDs().Select(a.GetStorableByID).Any(s => s.IsAction("开始淡入")))
                         .Select(a => a.uid)
                 ).ToList();
             };
@@ -303,7 +303,7 @@ namespace VamTimeline
         {
             if (current.nextAnimationName == null)
             {
-                _nextAnimationPreviewJSON.val = "No next animation configured";
+                _nextAnimationPreviewJSON.val = "未配置下一个动画";
                 return;
             }
 

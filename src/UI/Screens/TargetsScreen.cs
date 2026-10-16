@@ -28,7 +28,7 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            _filterJSON = new JSONStorableBool("Filter unselected targets", _lastFilterVal, val => { _lastFilterVal = val; RefreshTargetsListDeferred(); });
+            _filterJSON = new JSONStorableBool("过滤未选中的目标", _lastFilterVal, val => { _lastFilterVal = val; RefreshTargetsListDeferred(); });
 
             animationEditContext.animation.animatables.onTargetsSelectionChanged.AddListener(RefreshTargetsListDeferred);
 
@@ -137,7 +137,7 @@ You'll find a built-in guide, and links to the more detailed wiki as well as tut
 
             if (!hasTargets)
             {
-                _noTargetsUI = prefabFactory.CreateHeader("No targets", 2);
+                _noTargetsUI = prefabFactory.CreateHeader("没有目标", 2);
             }
             else
             {
@@ -155,7 +155,7 @@ You'll find a built-in guide, and links to the more detailed wiki as well as tut
 
         private void CreateAddRemoveTargetsButton(bool highlight)
         {
-            _manageTargetsUI = CreateChangeScreenButton("<b>[+/-]</b> Add/remove targets", AddRemoveTargetsScreen.ScreenName);
+            _manageTargetsUI = CreateChangeScreenButton("<b>[+/-]</b> 添加 / 移除目标", AddRemoveTargetsScreen.ScreenName);
             if (highlight)
                 _manageTargetsUI.buttonColor = new Color(0f, 1f, 0f);
             else

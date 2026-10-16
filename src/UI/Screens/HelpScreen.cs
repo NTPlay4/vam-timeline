@@ -5,55 +5,55 @@ namespace VamTimeline
         public const string ScreenName = "Help";
 
         private const string _helpText = @"
-<b>Welcome to Timeline!</b>
+<b>欢迎使用 Timeline!</b>
 
-Create advanced and dynamic curve-based animations using keyframes and triggers.
+使用关键帧与触发器,创建高级且动态的基于曲线的动画。
 
-There is documentation available in the wiki (accessible from the More menu), as well as video tutorials.
+wiki 中提供了文档(可从「更多」菜单进入),也有视频教程。
 
-<b>The UI</b>
+<b>界面</b>
 
-At the top you can find <i>tabs</i>. This is how you'll navigate between screens.
+顶部是<i>标签页</i>,用于在各界面之间切换。
 
-On your left, you can find the list of animations. By default, there's only one: 'Anim 1'. You can also have Layers and Segments (see below) if you use them.
+左侧是动画列表。默认只有一个:'Anim 1'。如果你使用层(Layers)与片段(Segments),它们也会出现在这里(见下文)。
 
-Under, you have the keyframe navigation controls. The leftmost and rightmost buttons go to the next/previous frame, the inner buttons let you move backward and forward, and the center button 'snaps' to the closest second.
+下方是关键帧导航控件。最左和最右的按钮跳到上一帧 / 下一帧,内侧按钮用于前后移动,中间按钮会「吸附」到最近的整秒。
 
-There are two Play buttons. ""All"" is used to play all layers at once, and will play sequences. The second (named after the current animation) will only play the current clip.
+有两个播放按钮:""全部""(All)会同时播放所有层并播放序列;另一个(以当前动画命名)只播放当前片段。
 
-Then you have the <i>scrubber</i>. It shows the animation time and where you currently are. You can move the time back and forth, and zoom in/out.
+然后是<i>时间轴(scrubber)</i>,显示动画时间与当前位置。你可以前后拖动时间,也可以缩放。
 
-Underneath, you have the <i>dope sheet</i>. This shows you all <i>targets</i> (e.g. a hand control or a smile morph), and whether there's a keyframe at any point in time. You can switch to the Curves view using the top-left button.
+再下面是<i>简易表(dope sheet)</i>,显示所有<i>目标</i>(例如手部控制器或微笑形变),以及它们在各个时间点是否有关键帧。可用左上角按钮切换到曲线视图。
 
-Finally, you have buttons to delete, copy and paste; they will affect the currently selected keyframes in the dope sheet.
+最后是删除、复制、粘贴按钮;它们作用于简易表中当前选中的关键帧。
 
-<b>Your first animation</b>
+<b>你的第一个动画</b>
 
-Select the 'Add/remove targets' button in the Targets panel.
+在「目标」面板中点击「添加 / 移除目标」按钮。
 
-Choose what you want to animate. For example, the right hand controller: select rHandControl in the Control drop down, and press Add. You'll see the target added on the dope sheet.
+选择你想要动画化的对象。例如右手控制器:在「控制器」下拉框中选择 rHandControl,然后点击「添加」。你会看到该目标出现在简易表中。
 
-Move the right hand to a new position, move the scrubber to 1s, and move the right hand to another position.
+把右手移动到一个新位置,将时间轴拖到 1 秒,再把右手移到另一个位置。
 
-Now, rewind (press Stop) and Play. You'll see the right hand move back and forth between the two positions. This is because the animation is <i>looping</i>. You can change this behavior in the Edit tab.
+现在倒回(点击停止)并播放。你会看到右手在两个位置之间来回移动,这是因为动画在<i>循环</i>。你可以在「编辑」标签页中更改此行为。
 
-<b>Sequencing</b>
+<b>序列</b>
 
-You can create new animations and automatically blend between them. Create another animation (Animations, Create, Create animation) and go to the Sequence tab. You can see in the Play next drop down the other animation. If you select it, it will automatically play. Check out the wiki for more information on sequencing features.
+你可以创建多个动画并自动在它们之间混合。再创建一个动画(动画 → 创建 → 创建动画),然后进入「序列」标签页。在「播放下一个」下拉框中可以看到另一个动画,选中它便会自动播放。更多序列功能请查看 wiki。
 
-You can name your animations 'prefix/something' to play a subset of animations, they will show up as 'prefix/*' in the Play next drop down.
+你可以把动画命名为 'prefix/something' 来播放一组动画,它们会在「播放下一个」下拉框中显示为 'prefix/*'。
 
-<b>Layers and segments</b>
+<b>层与片段</b>
 
-You can create layers in Animations, Create. Layers allow you to have multiple animations running at the same time, each affecting its own targets. For example, you could have a layer to animate breathing, and another layer to animate the hands. Each will have its own animations and sequencing.
+你可以在「动画 → 创建」中创建层。层允许多个动画同时运行,各自影响自己的目标。例如一个层做呼吸动画,另一个层做手部动画。每层都有自己的动画与序列。
 
-You can also have multiple animations sharing the same name across layers; they will always play and scrub together.
+多个层之间也可以有同名动画;它们会始终一起播放与拖动。
 
-If you need to create animations that use different targets, you can create segments. Segments are like completely independent animations, with their own layers. Only one segment can play at a time, except the shared segment.
+如果你需要创建使用不同目标的动画,可以创建片段。片段就像完全独立的动画,拥有自己的层。除共享片段外,同一时间只能播放一个片段。
 
-<b>Learning</b>
+<b>学习</b>
 
-Check out the wiki (link in the More menu) for more documentation and videos. There are a ton of things you can do! Now have fun!
+更多文档与视频请查看 wiki(「更多」菜单中有链接)。你能做的事情非常多!祝你玩得开心!
 ";
 
         public override string screenId => ScreenName;
@@ -62,14 +62,14 @@ Check out the wiki (link in the More menu) for more documentation and videos. Th
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             InitExplanation();
         }
 
         private void InitExplanation()
         {
-            var textJSON = new JSONStorableString("Help", _helpText);
+            var textJSON = new JSONStorableString("帮助", _helpText);
             var textUI = prefabFactory.CreateTextField(textJSON);
             textUI.height = 1070f;
         }

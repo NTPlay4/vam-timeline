@@ -9,8 +9,8 @@ namespace VamTimeline
     {
         public const string ScreenName = "Bulk";
 
-        private const string _offsetControllerUILabel = "Start offset controllers mode...";
-        private const string _offsetControllerUIOffsetLabel = "Apply recorded offset...";
+        private const string _offsetControllerUILabel = "开始偏移控制器模式...";
+        private const string _offsetControllerUIOffsetLabel = "应用已录制的偏移...";
 
         private static bool _offsetting;
         private static string _lastOffsetMode;
@@ -33,7 +33,7 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             InitSelectionUI();
 
@@ -58,7 +58,7 @@ namespace VamTimeline
 
         private void InitOffsetUI()
         {
-            _offsetModeJSON = new JSONStorableStringChooser("Offset mode", new List<string> { OffsetOperations.ChangePivotMode, OffsetOperations.OffsetMode, OffsetOperations.RepositionMode }, _lastOffsetMode ?? OffsetOperations.RepositionMode, "Offset mode", val => _lastOffsetMode = val);
+            _offsetModeJSON = new JSONStorableStringChooser("偏移模式", new List<string> { OffsetOperations.ChangePivotMode, OffsetOperations.OffsetMode, OffsetOperations.RepositionMode }, _lastOffsetMode ?? OffsetOperations.RepositionMode, "偏移模式", val => _lastOffsetMode = val);
             prefabFactory.CreatePopup(_offsetModeJSON, false, true, 230f, true);
 
             _offsetControllerUI = prefabFactory.CreateButton(_offsetting ? _offsetControllerUIOffsetLabel : _offsetControllerUILabel);
@@ -67,22 +67,22 @@ namespace VamTimeline
 
         private void InitBulkClipboardUI()
         {
-            var deleteUI = prefabFactory.CreateButton("Delete frame(s)");
+            var deleteUI = prefabFactory.CreateButton("删除帧");
             deleteUI.button.onClick.AddListener(() => CopyDeleteSelected(false, true));
 
-            var cutUI = prefabFactory.CreateButton("Cut frame(s)");
+            var cutUI = prefabFactory.CreateButton("剪切帧");
             cutUI.button.onClick.AddListener(() => CopyDeleteSelected(true, true));
 
-            var copyUI = prefabFactory.CreateButton("Copy frame(s)");
+            var copyUI = prefabFactory.CreateButton("复制帧");
             copyUI.button.onClick.AddListener(() => CopyDeleteSelected(true, false));
 
-            var pasteUI = prefabFactory.CreateButton("Paste frame(s)");
+            var pasteUI = prefabFactory.CreateButton("粘贴帧");
             pasteUI.button.onClick.AddListener(() => plugin.pasteJSON.actionCallback());
         }
 
         private void InitSelectionUI()
         {
-            _startJSON = new JSONStorableFloat("Selection starts at", 0f, val =>
+            _startJSON = new JSONStorableFloat("选区开始于", 0f, val =>
             {
                 var closest = animationEditContext.GetAllOrSelectedTargets().Select(t => t.GetTimeClosestTo(val)).OrderBy(t => Mathf.Abs(val - t)).FirstOrDefault();
                 _startJSON.valNoCallback = closest;
@@ -92,7 +92,7 @@ namespace VamTimeline
             }, 0f, current.animationLength);
             prefabFactory.CreateSlider(_startJSON);
 
-            _endJSON = new JSONStorableFloat("Selection ends at", 0f, val =>
+            _endJSON = new JSONStorableFloat("选区结束于", 0f, val =>
             {
                 var closest = animationEditContext.GetAllOrSelectedTargets().Select(t => t.GetTimeClosestTo(val)).OrderBy(t => Mathf.Abs(val - t)).FirstOrDefault();
                 _endJSON.valNoCallback = closest == 0 ? current.animationLength : closest;
@@ -101,20 +101,20 @@ namespace VamTimeline
             }, 0f, current.animationLength);
             prefabFactory.CreateSlider(_endJSON);
 
-            var markScrubberRangeUI = prefabFactory.CreateButton("Select visible range");
+            var markScrubberRangeUI = prefabFactory.CreateButton("选择可见范围");
             markScrubberRangeUI.button.onClick.AddListener(() =>
             {
                 _startJSON.val = animationEditContext.scrubberRange.rangeBegin;
                 _endJSON.val = animationEditContext.scrubberRange.rangeBegin + animationEditContext.scrubberRange.rangeDuration;
             });
 
-            var markSelectionStartUI = prefabFactory.CreateButton("Start at current time");
+            var markSelectionStartUI = prefabFactory.CreateButton("在当前时间开始");
             markSelectionStartUI.button.onClick.AddListener(() => _startJSON.val = current.clipTime);
 
-            var markSelectionEndUI = prefabFactory.CreateButton("End at current time");
+            var markSelectionEndUI = prefabFactory.CreateButton("在当前时间结束");
             markSelectionEndUI.button.onClick.AddListener(() => _endJSON.val = animationEditContext.clipTime);
 
-            _selectionJSON = new JSONStorableString("Selected frames", "")
+            _selectionJSON = new JSONStorableString("已选帧", "")
             {
                 isStorable = false
             };
@@ -124,7 +124,7 @@ namespace VamTimeline
 
         private void InitChangeCurveUI()
         {
-            _changeCurveJSON = new JSONStorableStringChooser("Change curve", CurveTypeValues.choicesList, "", "Change curve", ChangeCurve);
+            _changeCurveJSON = new JSONStorableStringChooser("更改曲线", CurveTypeValues.choicesList, "", "更改曲线", ChangeCurve);
             var curveTypeUI = prefabFactory.CreatePopup(_changeCurveJSON, false, false);
             curveTypeUI.popupPanelHeight = 280f;
         }

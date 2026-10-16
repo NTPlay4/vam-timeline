@@ -48,9 +48,9 @@ namespace VamTimeline
 
             // Right side
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
-            _resultJSON = new JSONStorableString("Result", "Analyzing...");
+            _resultJSON = new JSONStorableString("结果", "分析中...");
             prefabFactory.CreateTextField(_resultJSON).height = 1060f;
 
             DoAnalysis();
@@ -63,7 +63,7 @@ namespace VamTimeline
             _instances.Clear();
             _clips.Clear();
 
-            _resultBuffer.AppendLine("<b>SCAN RESULT</b>");
+            _resultBuffer.AppendLine("<b>扫描结果</b>");
             _resultBuffer.AppendLine();
 
             foreach (var atom in SuperController.singleton.GetAtoms())
@@ -81,7 +81,7 @@ namespace VamTimeline
                 }
             }
 
-            _resultBuffer.AppendLine("<b>ISSUES</b>");
+            _resultBuffer.AppendLine("<b>问题</b>");
             _resultBuffer.AppendLine();
 
             var issues = 0;

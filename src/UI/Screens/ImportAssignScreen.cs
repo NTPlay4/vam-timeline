@@ -18,32 +18,32 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Cancel</i>", ImportExportScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>取消</i>", ImportExportScreen.ScreenName);
 
             List<AtomAnimationClip> clips;
             if (!(arg is List<AtomAnimationClip>))
             {
-                prefabFactory.CreateTextField(new JSONStorableString("Error", "No animations to import"));
+                prefabFactory.CreateTextField(new JSONStorableString("Error", "没有可导入的动画"));
                 return;
             }
 
             clips = (List<AtomAnimationClip>)arg;
 
-            prefabFactory.CreateButton("Deselect all").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("取消全选").button.onClick.AddListener(() =>
             {
                 foreach (var imported in _imported)
                 {
                     imported.includeJSON.val = false;
                 }
             });
-            prefabFactory.CreateButton("Select all").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("全选").button.onClick.AddListener(() =>
             {
                 foreach (var imported in _imported)
                 {
                     imported.includeJSON.val = true;
                 }
             });
-            prefabFactory.CreateButton("Prefer existing segment").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("优先使用已有片段").button.onClick.AddListener(() =>
             {
                 foreach (var imported in _imported)
                 {
@@ -51,7 +51,7 @@ namespace VamTimeline
                     if(match != null) imported.segmentJSON.val = match;
                 }
             });
-            prefabFactory.CreateButton("Prefer new segment").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("优先使用新片段").button.onClick.AddListener(() =>
             {
                 foreach (var imported in _imported)
                 {
@@ -67,7 +67,7 @@ namespace VamTimeline
             InitOverviewUI(clips);
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Import", 1);
+            prefabFactory.CreateHeader("导入", 1);
 
             _importBtns.Add(InitImportUI());
 
@@ -110,7 +110,7 @@ namespace VamTimeline
 
         public UIDynamicButton InitImportUI()
         {
-            var btn = prefabFactory.CreateButton("Import");
+            var btn = prefabFactory.CreateButton("导入");
             btn.buttonColor = Color.green;
             btn.buttonText.fontStyle = FontStyle.Bold;
             btn.button.onClick.AddListener(Import);

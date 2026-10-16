@@ -38,7 +38,9 @@ namespace VamTimeline
                 new Vector2(rect.xMin + x1, rect.yMax)
             ));
 
-            if (mode == ZoomStateModes.ResizeBeginMode)
+            var handlesVisible = animationEditContext != null && animationEditContext.zoomDraggable;
+
+            if (handlesVisible && mode == ZoomStateModes.ResizeBeginMode)
             {
                 vh.AddUIVertexQuad(UIVertexHelper.CreateVBO(style.ZoomedSectionHighlightColor,
                     new Vector2(rect.xMin + x1 - style.DragSideWidth, rect.yMin),
@@ -47,7 +49,7 @@ namespace VamTimeline
                     new Vector2(rect.xMin + x1 - style.DragSideWidth, rect.yMax)
                 ));
             }
-            else if (mode == ZoomStateModes.ResizeEndMode)
+            else if (handlesVisible && mode == ZoomStateModes.ResizeEndMode)
             {
                 vh.AddUIVertexQuad(UIVertexHelper.CreateVBO(style.ZoomedSectionHighlightColor,
                     new Vector2(rect.xMin + x1 + x2 - style.DragSideWidth, rect.yMin),

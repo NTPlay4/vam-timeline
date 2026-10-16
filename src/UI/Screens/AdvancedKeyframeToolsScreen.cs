@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +21,22 @@ namespace VamTimeline
 
             // Right side
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             prefabFactory.CreateSpacer();
 
-            var keyframeCurrentPoseUI = prefabFactory.CreateButton("Add all on controllers");
+            var keyframeCurrentPoseUI = prefabFactory.CreateButton("在所有控制器上添加");
             keyframeCurrentPoseUI.button.onClick.AddListener(AddAllOnTargets);
 
-            var keyframeCurrentPoseTrackedUI = prefabFactory.CreateButton("Keyframe pose (animated targets only)");
+            var keyframeCurrentPoseTrackedUI = prefabFactory.CreateButton("打姿势关键帧(仅动画目标)");
             keyframeCurrentPoseTrackedUI.button.onClick.AddListener(KeyframeCurrentPose);
 
-            var keyframFloatsUI = prefabFactory.CreateButton("Keyframe float params");
+            var keyframFloatsUI = prefabFactory.CreateButton("给浮点参数打关键帧");
             keyframFloatsUI.button.onClick.AddListener(() => KeyframeFloats());
 
             prefabFactory.CreateSpacer();
 
-            _bakeUI = prefabFactory.CreateButton("Bake animation (arm & record)");
+            _bakeUI = prefabFactory.CreateButton("烘焙动画(准备并录制)");
             _bakeUI.button.onClick.AddListener(Bake);
 
             prefabFactory.CreateSpacer();
@@ -46,18 +46,18 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
 
-            var rebuildAnimationsUI = prefabFactory.CreateButton("Rebuild & realign all animations");
+            var rebuildAnimationsUI = prefabFactory.CreateButton("重建并对齐所有动画");
             rebuildAnimationsUI.button.onClick.AddListener(RebuildAnimations);
 
             prefabFactory.CreateSpacer();
 
-            var removeAllKeyframesUI = prefabFactory.CreateButton("Remove all keyframes");
+            var removeAllKeyframesUI = prefabFactory.CreateButton("移除所有关键帧");
             removeAllKeyframesUI.buttonColor = Color.yellow;
             removeAllKeyframesUI.button.onClick.AddListener(RemoveAllKeyframes);
 
             prefabFactory.CreateSpacer();
 
-            var clearAllUI = prefabFactory.CreateButton("Delete all animations (reset)");
+            var clearAllUI = prefabFactory.CreateButton("删除所有动画(重置)");
             clearAllUI.buttonColor = new Color(1f, 0f, 0f);
             clearAllUI.textColor = new Color(1f, 1f, 1f);
             clearAllUI.button.onClick.AddListener(ClearAll);
@@ -186,7 +186,7 @@ namespace VamTimeline
                 }
 
                 _baking = true;
-                _bakeUI.label = "Click or press Esc to stop...";
+                _bakeUI.label = "点击或按 Esc 停止...";
 
                 animationEditContext.PlayAll();
                 SuperController.singleton.motionAnimationMaster.StartRecord();
@@ -207,7 +207,7 @@ namespace VamTimeline
             try
             {
                 _baking = false;
-                _bakeUI.label = "Bake animation (arm & record)";
+                _bakeUI.label = "烘焙动画(准备并录制)";
 
                 SuperController.singleton.motionAnimationMaster.StopRecord();
                 animation.StopAll();
@@ -221,7 +221,7 @@ namespace VamTimeline
         private void ClearAll()
         {
             if (!animationEditContext.CanEdit()) return;
-            prefabFactory.CreateConfirm("Delete all animations", ClearAllConfirm);
+            prefabFactory.CreateConfirm("删除所有动画", ClearAllConfirm);
         }
 
         private void ClearAllConfirm()

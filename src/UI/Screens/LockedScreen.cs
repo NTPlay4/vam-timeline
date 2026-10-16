@@ -17,14 +17,14 @@ namespace VamTimeline
         {
             string text;
             if(animationEditContext.locked)
-                text = @"Enable ""Edit Mode"" to make modifications to this animation";
+                text = @"请启用「编辑模式」以修改此动画";
             else if (!plugin.isActiveAndEnabled)
-                text = "Enable the Timeline plugin as well as the containing atom to make modifications to this animation";
+                text = "请同时启用 Timeline 插件及其所在人物,才能修改此动画";
             else
-                text = "Could not identify a lock reason";
+                text = "无法识别锁定原因";
 
-            var textJSON = new JSONStorableString("Help", $@"
-<b>Locked</b>
+            var textJSON = new JSONStorableString("帮助", $@"
+<b>已锁定</b>
 
 {text}
 ");

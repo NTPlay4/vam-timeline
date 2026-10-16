@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,11 +28,11 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
-            _backupUI = prefabFactory.CreateButton("Backup");
+            _backupUI = prefabFactory.CreateButton("备份");
             _backupUI.button.onClick.AddListener(TakeBackup);
-            _restoreUI = prefabFactory.CreateButton("Restore");
+            _restoreUI = prefabFactory.CreateButton("恢复");
             _restoreUI.button.onClick.AddListener(RestoreBackup);
             _restoreUI.button.interactable = HasBackup();
             if (HasBackup()) _restoreUI.label = $"Restore [{AtomAnimationBackup.singleton.backupTime}]";
@@ -44,12 +44,12 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
 
-            _timeSpanFs = new JSONStorableFloat("Time Span", 0.25f,
+            _timeSpanFs = new JSONStorableFloat("时间跨度", 0.25f,
                 t => { _timeSpanFs.val = Math.Max(Math.Min(t, current.animationLength * 0.5f), 0.001f); },
                 0f, current.animationLength * 0.5f, true);
             prefabFactory.CreateSlider(_timeSpanFs);
 
-            _centerWeightFs = new JSONStorableFloat("Center Weight", 1f,
+            _centerWeightFs = new JSONStorableFloat("中心权重", 1f,
                 w => { _centerWeightFs.val = w; },
                 -10f, 10f, false, true
             );
@@ -57,19 +57,19 @@ namespace VamTimeline
 
             prefabFactory.CreateSpacer();
 
-            _startTimeFs = new JSONStorableFloat("Start Time", 0f,
+            _startTimeFs = new JSONStorableFloat("开始时间", 0f,
                 t => { _startTimeFs.val = Math.Max(0f, Math.Min(t, current.animationLength)); },
                 0f, current.animationLength, true
             );
             prefabFactory.CreateSlider(_startTimeFs);
 
-            _endTimeFs = new JSONStorableFloat("End Time", current.animationLength,
+            _endTimeFs = new JSONStorableFloat("结束时间", current.animationLength,
                 t => { _endTimeFs.val = Math.Max(0f, Math.Min(t, current.animationLength)); },
                 0f, current.animationLength, true, true
             );
             prefabFactory.CreateSlider(_endTimeFs);
 
-            _goButton = prefabFactory.CreateButton("Apply Smoothing");
+            _goButton = prefabFactory.CreateButton("应用平滑");
             _goButton.button.onClick.AddListener(StartSmoothing);
 
             _statusLabel = new JSONStorableString("Status Label", "Select at least one control and press Apply.");
@@ -83,8 +83,8 @@ namespace VamTimeline
                 StopCoroutine(_co);
                 _co = null;
                 // The button said Cancel when they clicked it
-                _goButton.label = "Apply Smoothing";
-                _statusLabel.val = "Smoothing cancelled.";
+                _goButton.label = "应用平滑";
+                _statusLabel.val = "平滑已取消。";
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace VamTimeline
                 return;
             }
 
-            _goButton.label = "Cancel";
+            _goButton.label = "取消";
             _co = StartCoroutine(DoSmoothingCo(targets));
         }
 
@@ -199,8 +199,8 @@ namespace VamTimeline
                 rawQueue.Clear();
             }
 
-            _goButton.label = "Apply Smoothing";
-            _statusLabel.val = "Smoothing complete.";
+            _goButton.label = "应用平滑";
+            _statusLabel.val = "平滑完成。";
             _co = null;
         }
 

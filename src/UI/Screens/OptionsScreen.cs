@@ -11,6 +11,7 @@ namespace VamTimeline
         private JSONStorableFloat _snapJSON;
         private JSONStorableBool _autoKeyframeAllControllersJSON;
         private JSONStorableBool _showPaths;
+        private JSONStorableBool _zoomDraggableJSON;
         private JSONStorableBool _ignoreSequencingJSON;
         private JSONStorableStringChooser _serializationModeJSON;
 
@@ -24,11 +25,11 @@ namespace VamTimeline
 
             // Right side
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             InitLockedUI();
 
-            prefabFactory.CreateHeader("Playback Options", 1);
+            prefabFactory.CreateHeader("播放选项", 1);
 
             InitUseRealTimeUI();
             InitLiveParenting();
@@ -41,17 +42,18 @@ namespace VamTimeline
                 InitSyncSubsceneOnly();
 #endif
 
-            prefabFactory.CreateHeader("Edit Options", 1);
+            prefabFactory.CreateHeader("编辑选项", 1);
 
             InitSnapUI();
 
             InitAutoKeyframeUI();
 
-            prefabFactory.CreateHeader("UI Options", 1);
+            prefabFactory.CreateHeader("界面选项", 1);
 
             InitShowPathsUI();
+            InitZoomDraggableUI();
 
-            prefabFactory.CreateHeader("Serialization Options", 1);
+            prefabFactory.CreateHeader("序列化选项", 1);
 
             InitSerializationModeUI();
 
@@ -60,7 +62,7 @@ namespace VamTimeline
 
         private void InitLockedUI()
         {
-            _lockedJSON = new JSONStorableBool("Lock (ignore in-game edits)", animationEditContext.locked, val => animationEditContext.locked = val);
+            _lockedJSON = new JSONStorableBool("锁定(忽略游戏内编辑)", animationEditContext.locked, val => animationEditContext.locked = val);
             prefabFactory.CreateToggle(_lockedJSON);
         }
 
@@ -69,15 +71,15 @@ namespace VamTimeline
             var timeModes = new List<string> {TimeModes.UnityTime.ToString(), TimeModes.RealTime.ToString()};
             var timeModeDisplay = new List<string>
             {
-                "Game time (slows with low fps)",
-                "Real time (better for audio sync)"
+                "游戏时间(低帧率时变慢)",
+                "实时(音频同步更好)"
             };
             if (animation.timeMode == TimeModes.RealTimeLegacy)
             {
               timeModes.Add(TimeModes.RealTimeLegacy.ToString());
-              timeModeDisplay.Add("Real time (legacy, only use for old scenes)");
+              timeModeDisplay.Add("实时(旧版,仅用于老场景)");
             }
-            var timeTypeJSON = new JSONStorableStringChooser("Time mode", timeModes, TimeModes.UnityTime.ToString(), "Time mode")
+            var timeTypeJSON = new JSONStorableStringChooser("时间模式", timeModes, TimeModes.UnityTime.ToString(), "时间模式")
             {
                 displayChoices = timeModeDisplay,
                 valNoCallback = animation.timeMode.ToString(),
@@ -88,31 +90,31 @@ namespace VamTimeline
 
         private void InitForceBlendInTime()
         {
-            var forceBlendTimeJSON = new JSONStorableBool("Ignore blend speed", animation.forceBlendTime, val => animation.forceBlendTime = val);
+            var forceBlendTimeJSON = new JSONStorableBool("忽略混合速度", animation.forceBlendTime, val => animation.forceBlendTime = val);
             prefabFactory.CreateToggle(forceBlendTimeJSON);
         }
 
         private void InitLiveParenting()
         {
-            var liveParentingJSON = new JSONStorableBool("Always-on parenting", animation.liveParenting, val => animation.liveParenting = val);
+            var liveParentingJSON = new JSONStorableBool("常驻父子关系", animation.liveParenting, val => animation.liveParenting = val);
             prefabFactory.CreateToggle(liveParentingJSON);
         }
 
         private void InitDisableSync()
         {
-            _syncWithPeersJSON = new JSONStorableBool("Sync with other atoms", animation.syncWithPeers, val => animation.syncWithPeers = val);
+            _syncWithPeersJSON = new JSONStorableBool("与其他人物同步", animation.syncWithPeers, val => animation.syncWithPeers = val);
             prefabFactory.CreateToggle(_syncWithPeersJSON);
         }
 
         private void InitSyncSubsceneOnly()
         {
-            _syncSubsceneOnlyJSON = new JSONStorableBool("Send sync in subscene only", animation.syncSubsceneOnly, val => animation.syncSubsceneOnly = val);
+            _syncSubsceneOnlyJSON = new JSONStorableBool("仅在子场景中发送同步", animation.syncSubsceneOnly, val => animation.syncSubsceneOnly = val);
             prefabFactory.CreateToggle(_syncSubsceneOnlyJSON);
         }
 
         private void InitSnapUI()
         {
-            _snapJSON = new JSONStorableFloat("Snap", 0.001f, val => animationEditContext.snap = val.Snap(), 0.1f, 1f)
+            _snapJSON = new JSONStorableFloat("吸附", 0.001f, val => animationEditContext.snap = val.Snap(), 0.1f, 1f)
             {
                 valNoCallback = animationEditContext.snap
             };
@@ -122,21 +124,29 @@ namespace VamTimeline
 
         private void InitAutoKeyframeUI()
         {
-            _autoKeyframeAllControllersJSON = new JSONStorableBool("Keyframe all controllers at once", animationEditContext.autoKeyframeAllControllers, val => animationEditContext.autoKeyframeAllControllers = val);
+            _autoKeyframeAllControllersJSON = new JSONStorableBool("一次性给所有控制器打关键帧", animationEditContext.autoKeyframeAllControllers, val => animationEditContext.autoKeyframeAllControllers = val);
             prefabFactory.CreateToggle(_autoKeyframeAllControllersJSON);
         }
 
         private void InitShowPathsUI()
         {
             _showPaths = new JSONStorableBool(
-                "Show selected controllers paths", animationEditContext.showPaths,
+                "显示所选控制器的路径", animationEditContext.showPaths,
                 val => animationEditContext.showPaths = val);
             prefabFactory.CreateToggle(_showPaths);
         }
 
+        private void InitZoomDraggableUI()
+        {
+            _zoomDraggableJSON = new JSONStorableBool(
+                "拖动时间轴两端(缩放)", animationEditContext.zoomDraggable,
+                val => animationEditContext.zoomDraggable = val);
+            prefabFactory.CreateToggle(_zoomDraggableJSON);
+        }
+
         private void InitIgnoreSequencing()
         {
-            _ignoreSequencingJSON = new JSONStorableBool("Disable sequencing", animation.pauseSequencing, val => animation.pauseSequencing = val);
+            _ignoreSequencingJSON = new JSONStorableBool("禁用序列", animation.pauseSequencing, val => animation.pauseSequencing = val);
             prefabFactory.CreateToggle(_ignoreSequencingJSON);
         }
 
@@ -147,13 +157,13 @@ namespace VamTimeline
                 AtomAnimationSerializer.Modes.Full.ToString(),
                 AtomAnimationSerializer.Modes.Readable.ToString(),
                 AtomAnimationSerializer.Modes.Optimized.ToString(),
-            }, "Optimized", "Serialization Mode")
+            }, "Optimized", "序列化模式")
             {
                 displayChoices = new List<string>
                 {
-                    "Full (legacy <7.*)",
-                    "Readable (easier to edit)",
-                    "Optimized (smaller file)",
+                    "完整(旧版 <7.*)",
+                    "可读(便于编辑)",
+                    "优化(更小文件)",
                 },
                 setCallbackFunction = val => animation.serializeMode = int.Parse(val),
                 valNoCallback = animation.serializeMode.ToString()
@@ -168,6 +178,7 @@ namespace VamTimeline
             _lockedJSON.valNoCallback = animationEditContext.locked;
             _snapJSON.valNoCallback = animationEditContext.snap;
             _autoKeyframeAllControllersJSON.valNoCallback = animationEditContext.autoKeyframeAllControllers;
+            _zoomDraggableJSON.valNoCallback = animationEditContext.zoomDraggable;
         }
     }
 }

@@ -102,7 +102,7 @@ namespace VamTimeline
             group.padding = new RectOffset(8, 8, 8, 8);
             group.childAlignment = TextAnchor.MiddleCenter;
 
-            var liveJSON = new JSONStorableBool("Live scrubbing (layer)", target.animatableRef.live, val => target.animatableRef.live = val);
+            var liveJSON = new JSONStorableBool("实时拖动(层)", target.animatableRef.live, val => target.animatableRef.live = val);
             CreateExpandToggle(group.transform, liveJSON);
 
             var nameJSON = new JSONStorableString("Name", target.animatableRef.name);

@@ -7,7 +7,7 @@ namespace VamTimeline
 {
     public class ControllerTargetSettingsScreen : ScreenBase
     {
-        public const string ScreenName = "Controller settings";
+        public const string ScreenName = "控制器设置";
         private static FreeControllerV3AnimationTarget _lastArg;
         private JSONStorableStringChooser _atomJSON;
         private JSONStorableStringChooser _rigidbodyJSON;
@@ -22,9 +22,9 @@ namespace VamTimeline
             if (arg == null) arg = _lastArg; else _lastArg = (FreeControllerV3AnimationTarget)arg;
             _target = (FreeControllerV3AnimationTarget)arg;
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", TargetsScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", TargetsScreen.ScreenName);
 
-            prefabFactory.CreateHeader("Controller settings", 1);
+            prefabFactory.CreateHeader("控制器设置", 1);
 
             if (_target == null)
             {
@@ -35,12 +35,12 @@ namespace VamTimeline
 
             if (_target.targetsPosition && _target.targetsRotation)
             {
-                prefabFactory.CreateHeader("Parenting", 1);
+                prefabFactory.CreateHeader("父子关系", 1);
 
                 InitParentUI();
             }
 
-            prefabFactory.CreateHeader("Options", 1);
+            prefabFactory.CreateHeader("选项", 1);
 
             InitControlUI();
             InitWeightUI();
@@ -59,7 +59,7 @@ namespace VamTimeline
             prefabFactory.CreatePopup(_atomJSON, true, false, 700f);
             _atomJSON.valNoCallback = _target.parentAtomId ?? "None";
 
-            _rigidbodyJSON = new JSONStorableStringChooser("Rigidbody", new List<string> { "None" }, "None", "Rigidbody", (string val) => SyncRigidbody());
+            _rigidbodyJSON = new JSONStorableStringChooser("刚体", new List<string> { "None" }, "None", "刚体", (string val) => SyncRigidbody());
             prefabFactory.CreatePopup(_rigidbodyJSON, true, false, 700f);
             _rigidbodyJSON.valNoCallback = _target.parentRigidbodyId ?? "None";
 
@@ -68,7 +68,7 @@ namespace VamTimeline
 
         private void InitWeightUI()
         {
-            var parentWeight = new JSONStorableFloat("Weight", 1f, val => _target.weight = val, 0f, 1f)
+            var parentWeight = new JSONStorableFloat("权重", 1f, val => _target.weight = val, 0f, 1f)
             {
                 valNoCallback = _target.weight
             };
@@ -80,19 +80,19 @@ namespace VamTimeline
         {
             if (_target.targetsPosition)
             {
-                var controlPosition = new JSONStorableBool("Position enabled", _target.controlPosition, val => _target.controlPosition = val);
+                var controlPosition = new JSONStorableBool("启用位置", _target.controlPosition, val => _target.controlPosition = val);
                 prefabFactory.CreateToggle(controlPosition);
             }
             if (_target.targetsRotation)
             {
-                var controlRotation = new JSONStorableBool("Rotation enabled", _target.controlRotation, val => _target.controlRotation = val);
+                var controlRotation = new JSONStorableBool("启用旋转", _target.controlRotation, val => _target.controlRotation = val);
                 prefabFactory.CreateToggle(controlRotation);
             }
         }
 
         private void InitSplitPosRotUI()
         {
-            prefabFactory.CreateButton("Split Position & Rotation (BETA)").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("拆分位置与旋转(BETA)").button.onClick.AddListener(() =>
             {
                 foreach (var clip in currentLayer)
                 {

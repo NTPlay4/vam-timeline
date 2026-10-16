@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VamTimeline
 {
     public class AddSegmentScreen : AddScreenBase
     {
-        public const string ScreenName = "Add segment";
+        public const string ScreenName = "添加片段";
 
         public override string screenId => ScreenName;
 
@@ -25,13 +25,13 @@ namespace VamTimeline
                 prefabFactory.CreateSpacer();
                 prefabFactory.CreateHeader("Segments", 1);
 
-                InitNewSegmentNameUI("Assign name to current segment");
+                InitNewSegmentNameUI("为当前片段指定名称");
                 InitUseSegments();
             }
             else
             {
                 prefabFactory.CreateSpacer();
-                prefabFactory.CreateHeader("Create segment", 1);
+                prefabFactory.CreateHeader("创建片段", 1);
 
                 InitNewClipNameUI();
                 InitNewLayerNameUI();
@@ -51,7 +51,7 @@ namespace VamTimeline
                 prefabFactory.CreateSpacer();
                 prefabFactory.CreateHeader("More", 2);
 
-                CreateChangeScreenButton("<i>Create <b>shared segment</b>...</i>", AddSharedSegmentScreen.ScreenName);
+                CreateChangeScreenButton("<i>创建<b>共享片段</b>...</i>", AddSharedSegmentScreen.ScreenName);
             }
 
             RefreshUI();
@@ -65,25 +65,25 @@ namespace VamTimeline
 
         public void InitCreateSegmentUI()
         {
-            _createSegmentUI = prefabFactory.CreateButton("<b>Create new segment</b>");
+            _createSegmentUI = prefabFactory.CreateButton("<b>创建新片段</b>");
             _createSegmentUI.button.onClick.AddListener(AddSegment);
         }
 
         public void InitCopySegmentUI()
         {
-            _copySegmentUI = prefabFactory.CreateButton("Create copy of segment");
+            _copySegmentUI = prefabFactory.CreateButton("创建片段的副本");
             _copySegmentUI.button.onClick.AddListener(CopySegment);
         }
 
         public void InitCreateFromAnimUI()
         {
-            _createFromAnimUI = prefabFactory.CreateButton("Convert anim to segment");
+            _createFromAnimUI = prefabFactory.CreateButton("将动画转换为片段");
             _createFromAnimUI.button.onClick.AddListener(CreateFromAnim);
         }
 
         public void InitCreateTransitionSegmentUI()
         {
-            _createTransitionUI = prefabFactory.CreateButton("Create transition segment");
+            _createTransitionUI = prefabFactory.CreateButton("创建转场片段");
             _createTransitionUI.button.onClick.AddListener(CreateTransitionSegment);
         }
 

@@ -468,7 +468,7 @@ namespace VamTimeline
             }
 
             {
-                var btn = CreateButton("Confirm");
+                var btn = CreateButton("确认");
                 btn.transform.SetParent(group.transform, false);
 
                 btn.buttonColor = new Color(1f, 0f, 0f);
@@ -483,7 +483,7 @@ namespace VamTimeline
             }
 
             {
-                var btn = CreateButton("Cancel");
+                var btn = CreateButton("取消");
                 btn.transform.SetParent(group.transform, false);
 
                 btn.button.onClick.AddListener(() =>

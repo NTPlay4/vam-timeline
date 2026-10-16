@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,7 +61,7 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
 
         private void InitPoseStateUI()
         {
-            _poseStateJSON = new JSONStorableString("Pose State", "");
+            _poseStateJSON = new JSONStorableString("姿势状态", "");
             _poseStateUI = prefabFactory.CreateTextField(_poseStateJSON);
             _poseStateUI.GetComponent<LayoutElement>().minHeight = 38f;
             _poseStateUI.UItext.alignment = TextAnchor.MiddleCenter;
@@ -70,7 +70,7 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
 
         private void InitPoseUI()
         {
-            _savePoseUI = prefabFactory.CreateButton("Save pose");
+            _savePoseUI = prefabFactory.CreateButton("保存姿势");
             _savePoseUI.button.onClick.AddListener(() =>
             {
                 current.pose = AtomPose.FromAtom(plugin.containingAtom, _savePoseIncludeRoot.val, _savePoseIncludePose.val, _savePoseIncludeMorphs.val, _savePoseUseMergeLoad.val);
@@ -78,24 +78,24 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
 
             prefabFactory.CreateSpacer();
 
-            _savePoseIncludeRoot = new JSONStorableBool("Pose: Include Root", AtomPose.DefaultIncludeRoot, (bool val) => _savePoseUI.buttonColor = Color.yellow);
+            _savePoseIncludeRoot = new JSONStorableBool("姿势:包含根部", AtomPose.DefaultIncludeRoot, (bool val) => _savePoseUI.buttonColor = Color.yellow);
             prefabFactory.CreateToggle(_savePoseIncludeRoot);
-            _savePoseIncludePose = new JSONStorableBool("Pose: Include Bones & Controls", AtomPose.DefaultIncludePose, (bool val) => _savePoseUI.buttonColor = Color.yellow);
+            _savePoseIncludePose = new JSONStorableBool("姿势:包含骨骼与控制器", AtomPose.DefaultIncludePose, (bool val) => _savePoseUI.buttonColor = Color.yellow);
             prefabFactory.CreateToggle(_savePoseIncludePose);
-            _savePoseIncludeMorphs = new JSONStorableBool("Pose: Include Pose Morphs", AtomPose.DefaultIncludeMorphs, (bool val) => _savePoseUI.buttonColor = Color.yellow);
+            _savePoseIncludeMorphs = new JSONStorableBool("姿势:包含姿势形变", AtomPose.DefaultIncludeMorphs, (bool val) => _savePoseUI.buttonColor = Color.yellow);
             prefabFactory.CreateToggle(_savePoseIncludeMorphs);
-            _savePoseUseMergeLoad = new JSONStorableBool("Pose: Use Merge Load", AtomPose.DefaultUseMergeLoad, (bool val) => _savePoseUI.buttonColor = Color.yellow);
+            _savePoseUseMergeLoad = new JSONStorableBool("姿势:使用合并载入", AtomPose.DefaultUseMergeLoad, (bool val) => _savePoseUI.buttonColor = Color.yellow);
             prefabFactory.CreateToggle(_savePoseUseMergeLoad);
 
             prefabFactory.CreateSpacer();
 
-            _applyPoseUI = prefabFactory.CreateButton("Apply saved pose");
+            _applyPoseUI = prefabFactory.CreateButton("应用已保存的姿势");
             _applyPoseUI.button.onClick.AddListener(() => current.pose.Apply());
-            _clearPoseUI = prefabFactory.CreateButton("Clear saved pose");
+            _clearPoseUI = prefabFactory.CreateButton("清除已保存的姿势");
             _clearPoseUI.button.onClick.AddListener(() => { current.pose = null; current.applyPoseOnTransition = false; });
-            _copyPoseUI = prefabFactory.CreateButton("Copy current pose");
+            _copyPoseUI = prefabFactory.CreateButton("复制当前姿势");
             _copyPoseUI.button.onClick.AddListener(() => { _poseClipboard = AtomPose.FromAtom(plugin.containingAtom, _savePoseIncludeRoot.val, _savePoseIncludePose.val, _savePoseIncludeMorphs.val, _savePoseUseMergeLoad.val); _pastePoseUI.button.interactable = true; });
-            _pastePoseUI = prefabFactory.CreateButton("Paste copied pose");
+            _pastePoseUI = prefabFactory.CreateButton("粘贴已复制的姿势");
             _pastePoseUI.button.onClick.AddListener(() =>
             {
                 if (_poseClipboard == null) return;
@@ -106,7 +106,7 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
 
             prefabFactory.CreateSpacer();
 
-            _applyPoseOnTransition = new JSONStorableBool("Apply pose on transition", false, v => current.applyPoseOnTransition = v);
+            _applyPoseOnTransition = new JSONStorableBool("转场时应用姿势", false, v => current.applyPoseOnTransition = v);
             prefabFactory.CreateToggle(_applyPoseOnTransition);
         }
 
@@ -144,7 +144,7 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
             {
                 if (current.pose == null)
                 {
-                    _savePoseUI.label = "Use current pose";
+                    _savePoseUI.label = "使用当前姿势";
                     _savePoseUI.buttonColor = _copyPoseUI.buttonColor;
                     var poseClip = animation.index.ByName(current.animationSegmentId, current.animationNameId).FirstOrDefault(c => c.pose != null);
                     if (poseClip != null)
@@ -162,16 +162,16 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
                         }
                         else
                         {
-                            _poseStateJSON.val = "No pose saved";
+                            _poseStateJSON.val = "未保存姿势";
                             _poseStateUI.backgroundColor = Color.grey;
                         }
                     }
                 }
                 else
                 {
-                    _savePoseUI.label = "Overwrite pose";
+                    _savePoseUI.label = "覆盖姿势";
                     _savePoseUI.buttonColor = new Color(0.8f, 0.8f, 0.5f);
-                    _poseStateJSON.val = "<b>Pose saved</b>";
+                    _poseStateJSON.val = "<b>姿势已保存</b>";
                     _poseStateUI.backgroundColor = Color.green;
                 }
 
@@ -194,7 +194,7 @@ You can also use poses for animations by using 'Apply pose on transition'. This 
             }
             else
             {
-                _poseStateJSON.val = "Only Person atoms support poses";
+                _poseStateJSON.val = "仅「人物」类型支持姿势";
             }
         }
 

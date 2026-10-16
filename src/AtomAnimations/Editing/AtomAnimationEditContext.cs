@@ -21,6 +21,13 @@ namespace VamTimeline
         public class TimeChangedEvent : UnityEvent<TimeChangedEventArgs> { }
         public struct ScrubberRangeChangedEventArgs { public ScrubberRange scrubberRange; }
         public class ScrubberRangeChangedEvent : UnityEvent<ScrubberRangeChangedEventArgs> { }
+        public struct SelectionRange
+        {
+            public float start;
+            public float end;
+        }
+        public struct SelectionRangeChangedEventArgs { public SelectionRange selectionRange; }
+        public class SelectionRangeChangedEvent : UnityEvent<SelectionRangeChangedEventArgs> { }
         public class CurrentAnimationChangedEventArgs { public AtomAnimationClip before; public AtomAnimationClip after; }
         public class CurrentAnimationChangedEvent : UnityEvent<CurrentAnimationChangedEventArgs> { }
         public class AnimationSettingsChanged : UnityEvent<string> { }
@@ -29,6 +36,7 @@ namespace VamTimeline
         public readonly AnimationSettingsChanged onEditorSettingsChanged = new AnimationSettingsChanged();
         public readonly TimeChangedEvent onTimeChanged = new TimeChangedEvent();
         public readonly ScrubberRangeChangedEvent onScrubberRangeChanged = new ScrubberRangeChangedEvent();
+        public readonly SelectionRangeChangedEvent onSelectionRangeChanged = new SelectionRangeChangedEvent();
         public readonly CurrentAnimationChangedEvent onCurrentAnimationChanged = new CurrentAnimationChangedEvent();
         public readonly KeyframesReduced onKeyframesReduced = new KeyframesReduced();
 
@@ -57,6 +65,12 @@ namespace VamTimeline
             get { return _showPaths; }
             set { _showPaths = value; onEditorSettingsChanged.Invoke(nameof(showPaths)); }
         }
+        private bool _zoomDraggable = true;
+        public bool zoomDraggable
+        {
+            get { return _zoomDraggable; }
+            set { _zoomDraggable = value; onEditorSettingsChanged.Invoke(nameof(zoomDraggable)); }
+        }
         private bool _locked;
         public bool locked
         {
@@ -77,6 +91,7 @@ namespace VamTimeline
                 _currentAsList = new[] { value };
                 _lastCurrentAnimationLength = value.animationLength;
                 ResetScrubberRange();
+                ResetSelectionRange();
             }
         }
         // This ugly property is to cleanly allow ignoring grab release at the end of a mocap recording
@@ -122,6 +137,10 @@ namespace VamTimeline
                     ResetScrubberRange();
                 }
                 _lastCurrentAnimationLength = current.animationLength;
+                if (selectionRange.end > current.animationLength)
+                {
+                    ResetSelectionRange();
+                }
             }
         }
 
@@ -188,6 +207,30 @@ namespace VamTimeline
                 // TODO: If the clip time is out of range, update the scrubber position
                 onScrubberRangeChanged.Invoke(new ScrubberRangeChangedEventArgs {scrubberRange = value});
             }
+        }
+
+        private SelectionRange _selectionRange;
+
+        public SelectionRange selectionRange
+        {
+            get
+            {
+                return _selectionRange;
+            }
+            set
+            {
+                _selectionRange = value;
+                onSelectionRangeChanged.Invoke(new SelectionRangeChangedEventArgs { selectionRange = value });
+            }
+        }
+
+        public void ResetSelectionRange()
+        {
+            selectionRange = new SelectionRange
+            {
+                start = 0f,
+                end = current.animationLength
+            };
         }
 
         public float playTime
@@ -676,6 +719,102 @@ namespace VamTimeline
                 }
             }
         }
+
+        #region Batch selection
+
+        public void DeleteRange(float start, float end)
+        {
+            try
+            {
+                if (!CanEdit()) return;
+                foreach (var target in GetAllOrSelectedTargets())
+                {
+                    target.StartBulkUpdates();
+                    try
+                    {
+                        var keyframes = target.GetAllKeyframesTime();
+                        for (var key = keyframes.Length - 1; key >= 0; key--)
+                        {
+                            var keyTime = keyframes[key];
+                            if (keyTime < start || keyTime > end) continue;
+                            if (!keyTime.IsSameFrame(0f) && !keyTime.IsSameFrame(current.animationLength))
+                                target.DeleteFrame(keyTime);
+                        }
+                    }
+                    finally
+                    {
+                        target.EndBulkUpdates();
+                    }
+                }
+                Sample();
+            }
+            catch (Exception exc)
+            {
+                SuperController.LogError($"Timeline.{nameof(AtomAnimationEditContext)}.{nameof(DeleteRange)}: {exc}");
+            }
+        }
+
+        public void CutRange(float start, float end)
+        {
+            try
+            {
+                if (!CanEdit()) return;
+                CopyRange(start, end);
+                foreach (var target in GetAllOrSelectedTargets())
+                {
+                    target.StartBulkUpdates();
+                    try
+                    {
+                        var keyframes = target.GetAllKeyframesTime();
+                        for (var key = keyframes.Length - 1; key >= 0; key--)
+                        {
+                            var keyTime = keyframes[key];
+                            if (keyTime < start || keyTime > end) continue;
+                            if (!keyTime.IsSameFrame(0f) && !keyTime.IsSameFrame(current.animationLength))
+                                target.DeleteFrame(keyTime);
+                        }
+                    }
+                    finally
+                    {
+                        target.EndBulkUpdates();
+                    }
+                }
+                Sample();
+            }
+            catch (Exception exc)
+            {
+                SuperController.LogError($"Timeline.{nameof(AtomAnimationEditContext)}.{nameof(CutRange)}: {exc}");
+            }
+        }
+
+        public void CopyRange(float start, float end)
+        {
+            try
+            {
+                if (!CanEdit()) return;
+                clipboard.Clear();
+                clipboard.time = start;
+                var targets = GetAllOrSelectedTargets().ToList();
+                foreach (var target in targets)
+                {
+                    var keyframes = target.GetAllKeyframesTime();
+                    for (var key = 0; key < keyframes.Length; key++)
+                    {
+                        var keyTime = keyframes[key];
+                        if (keyTime < start || keyTime > end) continue;
+                        clipboard.entries.Insert(0, AtomAnimationClip.Copy(keyTime, targets));
+                    }
+                }
+                if (clipboard.entries.Count == 0)
+                    SuperController.LogMessage("Timeline: Nothing to copy");
+            }
+            catch (Exception exc)
+            {
+                SuperController.LogError($"Timeline.{nameof(AtomAnimationEditContext)}.{nameof(CopyRange)}: {exc}");
+            }
+        }
+
+        #endregion
 
         #endregion
 

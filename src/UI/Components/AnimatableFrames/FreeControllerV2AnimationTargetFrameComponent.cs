@@ -28,7 +28,7 @@ namespace VamTimeline
 
             CreateExpandButton(row1.transform, "Select", () => target.SelectInVam());
 
-            CreateExpandButton(row1.transform, "Parenting & more", () =>
+            CreateExpandButton(row1.transform, "父子关系及更多", () =>
             {
                 plugin.ChangeScreen(ControllerTargetSettingsScreen.ScreenName, target);
             });
@@ -39,12 +39,12 @@ namespace VamTimeline
 
             if (target.targetsPosition)
             {
-                var posJSON = new JSONStorableBool("Pos. enabled", target.controlPosition, val => target.controlPosition = val);
+                var posJSON = new JSONStorableBool("启用位置", target.controlPosition, val => target.controlPosition = val);
                 CreateExpandToggle(row2.transform, posJSON);
             }
             if (target.targetsRotation)
             {
-                var rotJSON = new JSONStorableBool("Rot. enabled", target.controlRotation, val => target.controlRotation = val);
+                var rotJSON = new JSONStorableBool("启用旋转", target.controlRotation, val => target.controlRotation = val);
                 CreateExpandToggle(row2.transform, rotJSON);
             }
         }
@@ -57,7 +57,7 @@ namespace VamTimeline
             {
                 if (!target.animatableRef.owned && target.animatableRef.controller == null)
                 {
-                    valueText.text = "[Missing]";
+                    valueText.text = "[缺失]";
                 }
                 else
                 {

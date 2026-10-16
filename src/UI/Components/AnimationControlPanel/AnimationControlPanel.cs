@@ -8,7 +8,7 @@ namespace VamTimeline
 {
     public class AnimationControlPanel : MonoBehaviour
     {
-        private const string _sharedSequenceLabel = "[Shared Layers]";
+        private const string _sharedSequenceLabel = "[共享层]";
 
         public static AnimationControlPanel Configure(GameObject go)
         {
@@ -130,21 +130,21 @@ namespace VamTimeline
             gridLayout.childControlWidth = true;
 
             var playAll = Instantiate(buttonPrefab, container.transform, false);
-            playAll.GetComponent<UIDynamicButton>().label = "\u25B6 All";
+            playAll.GetComponent<UIDynamicButton>().label = "\u25B6 全部";
             playAll.GetComponent<UIDynamicButton>().button.onClick.AddListener(() => _animationEditContext.PlayAll());
             playAll.GetComponent<LayoutElement>().preferredWidth = 0;
             playAll.GetComponent<LayoutElement>().flexibleWidth = 100;
             _playAll = playAll.GetComponent<UIDynamicButton>();
 
             var playClip = Instantiate(buttonPrefab, container.transform, false);
-            playClip.GetComponent<UIDynamicButton>().label = "\u25B6 Clip";
+            playClip.GetComponent<UIDynamicButton>().label = "\u25B6 片段";
             playClip.GetComponent<UIDynamicButton>().button.onClick.AddListener(() => _animationEditContext.PlayCurrentClip());
             playClip.GetComponent<LayoutElement>().preferredWidth = 0;
             playClip.GetComponent<LayoutElement>().flexibleWidth = 100;
             _playClip = playClip.GetComponent<UIDynamicButton>();
 
             var stop = Instantiate(buttonPrefab, container.transform, false);
-            stop.GetComponent<UIDynamicButton>().label = "\u25A0 Stop";
+            stop.GetComponent<UIDynamicButton>().label = "\u25A0 停止";
             stop.GetComponent<UIDynamicButton>().button.onClick.AddListener(() => { _animationEditContext.Stop(); });
             stop.GetComponent<LayoutElement>().preferredWidth = 0;
             stop.GetComponent<LayoutElement>().flexibleWidth = 30;
@@ -167,12 +167,12 @@ namespace VamTimeline
             );
 
 
-            CreateSmallButton(buttonPrefab, container.transform, "-1s",
+            CreateSmallButton(buttonPrefab, container.transform, "-1秒",
                 () => _animationEditContext.RewindSeconds(1f),
                 () => _animationEditContext.RewindSeconds(0.01f)
             );
 
-            CreateSmallButton(buttonPrefab, container.transform, "-.1s",
+            CreateSmallButton(buttonPrefab, container.transform, "-0.1秒",
                 () => _animationEditContext.RewindSeconds(0.1f),
                 () => _animationEditContext.RewindSeconds(0.001f)
             );
@@ -182,12 +182,12 @@ namespace VamTimeline
                 () => _animationEditContext.SnapToClosestKeyframe()
             );
 
-            CreateSmallButton(buttonPrefab, container.transform, "+.1s",
+            CreateSmallButton(buttonPrefab, container.transform, "+0.1秒",
                 () => _animationEditContext.ForwardSeconds(0.1f),
                 () => _animationEditContext.ForwardSeconds(0.001f)
             );
 
-            CreateSmallButton(buttonPrefab, container.transform, "+1s",
+            CreateSmallButton(buttonPrefab, container.transform, "+1秒",
                 () => _animationEditContext.ForwardSeconds(1f),
                 () => _animationEditContext.ForwardSeconds(0.01f)
             );

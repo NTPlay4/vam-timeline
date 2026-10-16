@@ -55,10 +55,10 @@ namespace VamTimeline
 
             InitStringifiedQueue();
 
-            prefabFactory.CreateHeader("Operations", 1);
+            prefabFactory.CreateHeader("操作", 1);
 
-            CreateChangeScreenButton("<i><b>Create</b> anims/layers/segments...</i>", AddAnimationsScreen.ScreenName);
-            CreateChangeScreenButton("<i><b>Manage/reorder</b> animations...</i>", ManageAnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<i><b>创建</b>动画 / 层 / 片段...</i>", AddAnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<i><b>管理 / 排序</b>动画...</i>", ManageAnimationsScreen.ScreenName);
 
             animation.onSegmentChanged.AddListener(ReloadScreen);
             animation.onQueueUpdated.AddListener(UpdateStringifiedQueue);
@@ -179,7 +179,7 @@ namespace VamTimeline
 
         private void InitStringifiedQueue()
         {
-            _stringifiedQueue = new JSONStorableString("Queue State", "");
+            _stringifiedQueue = new JSONStorableString("队列状态", "");
             prefabFactory.CreateTextField(_stringifiedQueue);
             UpdateStringifiedQueue();
         }

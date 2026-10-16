@@ -7,7 +7,7 @@ namespace VamTimeline
 {
     public class AddRemoveTargetsScreen : ScreenBase
     {
-        public const string ScreenName = "Edit Targets";
+        public const string ScreenName = "编辑目标";
 
         public override string screenId => ScreenName;
 
@@ -28,29 +28,29 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton($"<b><</b> <i>Back to {TargetsScreen.ScreenName}</i>", TargetsScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回目标列表</i>", TargetsScreen.ScreenName);
 
-            prefabFactory.CreateHeader("Add triggers target", 1);
+            prefabFactory.CreateHeader("添加触发器目标", 1);
 
             InitTriggersUI();
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Add atom target", 1);
+            prefabFactory.CreateHeader("添加人物目标", 1);
 
             InitAtomsUI();
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Add controls", 2);
+            prefabFactory.CreateHeader("添加控制器", 2);
 
             InitControllersUI();
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Add storable float params", 2);
+            prefabFactory.CreateHeader("添加可存储浮点参数", 2);
 
             InitFloatParamsUI();
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Remove targets", 2);
+            prefabFactory.CreateHeader("移除目标", 2);
 
             InitRemoveUI();
 
@@ -81,14 +81,14 @@ namespace VamTimeline
 
         private void InitTriggersUI()
         {
-            prefabFactory.CreateButton("Add triggers track")
+            prefabFactory.CreateButton("添加触发器轨道")
                 .button.onClick.AddListener(() =>
                 {
                     var track = animation.animatables.GetOrCreateTriggerTrack(current.animationLayerQualifiedId, GetUniqueTrackName("Triggers"));
                     AddTrack(track);
                 });
 
-            prefabFactory.CreateButton("Add audio track")
+            prefabFactory.CreateButton("添加音频轨道")
                 .button.onClick.AddListener(() =>
                 {
                     var track = animation.animatables.GetOrCreateTriggerTrack(current.animationLayerQualifiedId, GetUniqueTrackName("Audio"));
@@ -132,10 +132,10 @@ namespace VamTimeline
             _addControllerListJSON = new JSONStorableStringChooser("Control", new List<string>(), "", "Control");
             prefabFactory.CreatePopup(_addControllerListJSON, true, true, 600f);
 
-            _toggleControllerUI = prefabFactory.CreateButton("Add");
+            _toggleControllerUI = prefabFactory.CreateButton("添加");
             _toggleControllerUI.button.onClick.AddListener(AddAnimatedController);
 
-            var selectFromSceneUI = prefabFactory.CreateButton("<i>Select from scene</i>");
+            var selectFromSceneUI = prefabFactory.CreateButton("<i>从场景中选择</i>");
             selectFromSceneUI.button.onClick.AddListener(() =>
             {
                 SuperController.singleton.SelectModeControllers(targetCtrl =>
@@ -237,7 +237,7 @@ namespace VamTimeline
             _addParamListUI = prefabFactory.CreatePopup(_addParamListJSON, true, true, 500f, true, 110);
             _addParamListUI.popup.onOpenPopupHandlers += RefreshStorableFloatsList;
 
-            _toggleFloatParamUI = prefabFactory.CreateButton("Add");
+            _toggleFloatParamUI = prefabFactory.CreateButton("添加");
             _toggleFloatParamUI.button.onClick.AddListener(AddAnimatedFloatParam);
 
             RefreshStorablesList();
@@ -246,7 +246,7 @@ namespace VamTimeline
             var character = plugin.containingAtom.GetComponentInChildren<DAZCharacterSelector>();
             if (character != null)
             {
-                var makeMorphsAnimatableUI = prefabFactory.CreateButton("<i>Fav morphs & Resync in Control tab</i>");
+                var makeMorphsAnimatableUI = prefabFactory.CreateButton("<i>在控制标签页收藏形变并重新同步</i>");
                 makeMorphsAnimatableUI.button.onClick.AddListener(() =>
                 {
                     SuperController.singleton.SelectController(plugin.containingAtom.freeControllers.First(f => f.name == "control"));
@@ -333,7 +333,7 @@ namespace VamTimeline
 
         private void InitRemoveUI()
         {
-            _removeUI = prefabFactory.CreateButton("Remove selected");
+            _removeUI = prefabFactory.CreateButton("移除已选");
             _removeUI.buttonColor = Color.red;
             _removeUI.textColor = Color.white;
             _removeUI.button.onClick.AddListener(RemoveSelected);
@@ -373,7 +373,7 @@ namespace VamTimeline
 
         private void InitFingersPresetUI()
         {
-            prefabFactory.CreateButton("Add fingers").button.onClick.AddListener(() =>
+            prefabFactory.CreateButton("添加手指").button.onClick.AddListener(() =>
             {
                 var leftHandControl = plugin.containingAtom.GetStorableByID("LeftHandControl");
                 leftHandControl.SetStringChooserParamValue("fingerControlMode", "JSONParams");
@@ -393,7 +393,7 @@ namespace VamTimeline
         {
             var count = animationEditContext.GetSelectedTargets().Count();
             _removeUI.button.interactable = count > 0;
-            _removeUI.buttonText.text = count == 0 ? "Remove selected targets" : $"Remove {count} targets";
+            _removeUI.buttonText.text = count == 0 ? "移除已选目标" : $"Remove {count} targets";
         }
 
         #endregion

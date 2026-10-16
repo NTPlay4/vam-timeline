@@ -14,11 +14,11 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             InitAssignToGroupUI();
 
-            prefabFactory.CreateButton("Assign to selected targets").button.onClick.AddListener(Assign);
+            prefabFactory.CreateButton("分配给已选目标").button.onClick.AddListener(Assign);
 
             animation.animatables.onTargetsSelectionChanged.AddListener(OnTargetsSelectionChanged);
             OnTargetsSelectionChanged();
@@ -26,7 +26,7 @@ namespace VamTimeline
 
         private void InitAssignToGroupUI()
         {
-            _assignGroupJSON = new JSONStorableString("Group name (empty for auto)", "");
+            _assignGroupJSON = new JSONStorableString("分组名称(留空自动)", "");
             prefabFactory.CreateTextInput(_assignGroupJSON);
         }
 

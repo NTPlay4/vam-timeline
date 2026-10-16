@@ -143,7 +143,7 @@ namespace VamTimeline
             rect.offsetMax = new Vector2(-20f, 0);
 
             var text = go.AddComponent<Text>();
-            text.text = "Select targets in the dope sheet to see their curves";
+            text.text = "在简易表中选择目标以查看其曲线";
             text.font = _style.Font;
             text.fontSize = 28;
             text.color = _style.FontColor;

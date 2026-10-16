@@ -8,8 +8,8 @@ namespace VamTimeline
     public class MocapScreen : ScreenBase
     {
         public const string ScreenName = "Import scene animation";
-        private const string _recordingLabel = "\u25A0 Waiting for recording...";
-        private const string _startRecordControllersLabel = "\u25B6 Clear & record selected";
+        private const string _recordingLabel = "\u25A0 等待录制...";
+        private const string _startRecordControllersLabel = "\u25B6 清除并录制所选";
         private static Coroutine _recordingControllersCoroutine;
         private static bool _lastResizeAnimation;
         private static bool? _lastAutoRecordStop;
@@ -26,31 +26,31 @@ namespace VamTimeline
 
             // Right side
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
             prefabFactory.CreateSpacer();
 
             prefabFactory.CreateHeader("Import scene animation", 1);
-            _resizeAnimationJSON = new JSONStorableBool("Resize animation to match import", current.targetControllers.Count == 0 || _lastResizeAnimation, val => _lastResizeAnimation = val);
+            _resizeAnimationJSON = new JSONStorableBool("调整动画长度以匹配导入", current.targetControllers.Count == 0 || _lastResizeAnimation, val => _lastResizeAnimation = val);
             prefabFactory.CreateToggle(_resizeAnimationJSON);
 
-            _importRecordedUI = prefabFactory.CreateButton("Import scene animation (mocap)");
+            _importRecordedUI = prefabFactory.CreateButton("导入场景动画(动作捕捉)");
             _importRecordedUI.button.onClick.AddListener(ImportRecorded);
 
             prefabFactory.CreateSpacer();
 
-            prefabFactory.CreateHeader("Manage scene animation", 1);
+            prefabFactory.CreateHeader("管理场景动画", 1);
 
             _playAndRecordControllersUI = prefabFactory.CreateButton(_recordingControllersCoroutine != null ? _recordingLabel : _startRecordControllersLabel);
             _playAndRecordControllersUI.button.onClick.AddListener(PlayAndRecordControllers);
 
-            var clearMocapUI = prefabFactory.CreateButton("Clear atom's scene animation");
+            var clearMocapUI = prefabFactory.CreateButton("清除人物的场景动画");
             clearMocapUI.button.onClick.AddListener(ClearMocapData);
             clearMocapUI.buttonColor = Color.yellow;
 
             prefabFactory.CreateSpacer();
 
-            CreateChangeScreenButton("<i>Go to <b>reduce</b> screen...</i>", ReduceScreen.ScreenName);
+            CreateChangeScreenButton("<i>前往<b>精简</b>界面...</i>", ReduceScreen.ScreenName);
 
             animationEditContext.animation.animatables.onTargetsSelectionChanged.AddListener(OnTargetsSelectionChanged);
             OnTargetsSelectionChanged();
@@ -76,7 +76,7 @@ namespace VamTimeline
 
                 if (_importRecordedUI == null) throw new NullReferenceException(nameof(_importRecordedUI));
 
-                _importRecordedUI.buttonText.text = "Importing, please wait...";
+                _importRecordedUI.buttonText.text = "导入中,请稍候...";
                 _importRecordedUI.button.interactable = false;
 
                 StartCoroutine(ImportRecordedCoroutine());
@@ -104,7 +104,7 @@ namespace VamTimeline
                 }
                 catch (Exception exc)
                 {
-                    _importRecordedUI.buttonText.text = "Import recorded animation (mocap)";
+                    _importRecordedUI.buttonText.text = "导入已录制动画(动作捕捉)";
                     _importRecordedUI.button.interactable = true;
                     SuperController.LogError($"Timeline.{nameof(MocapScreen)}.{nameof(ImportRecordedCoroutine)}: {exc}");
                     yield break;
@@ -121,7 +121,7 @@ namespace VamTimeline
                 }
             }
 
-            _importRecordedUI.buttonText.text = "Import recorded animation (mocap)";
+            _importRecordedUI.buttonText.text = "导入已录制动画(动作捕捉)";
             _importRecordedUI.button.interactable = true;
         }
 
@@ -229,7 +229,7 @@ namespace VamTimeline
 
         private void ClearMocapData()
         {
-            prefabFactory.CreateConfirm("Clear all scene animation from atom?", ClearMocapDataConfirm);
+            prefabFactory.CreateConfirm("清除该人物的全部场景动画?", ClearMocapDataConfirm);
         }
 
         private void ClearMocapDataConfirm()

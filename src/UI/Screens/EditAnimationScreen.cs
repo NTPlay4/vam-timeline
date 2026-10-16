@@ -8,15 +8,15 @@ namespace VamTimeline
     public class EditAnimationScreen : ScreenBase
     {
         public const string ScreenName = "Edit";
-        private const string _changeLengthModeCropExtendEnd = "Crop/Extend (End)";
-        private const string _changeLengthModeCropExtendBegin = "Crop/Extend (Begin)";
-        private const string _changeLengthModeCropExtendAtTime = "Crop/Extend (Time)";
-        private const string _changeLengthModeStretch = "Stretch";
-        private const string _changeLengthModeLoop = "Loop";
+        private const string _changeLengthModeCropExtendEnd = "裁剪 / 延长(结束)";
+        private const string _changeLengthModeCropExtendBegin = "裁剪 / 延长(开始)";
+        private const string _changeLengthModeCropExtendAtTime = "裁剪 / 延长(时间)";
+        private const string _changeLengthModeStretch = "拉伸";
+        private const string _changeLengthModeLoop = "循环";
 
-        private const string _loopNotLoop = "Do Not Loop";
-        private const string _loopLoop = "Loop";
-        private const string _loopLoopPreserveLast = "Repeat (Preserve Last Frame)";
+        private const string _loopNotLoop = "不循环";
+        private const string _loopLoop = "循环";
+        private const string _loopLoopPreserveLast = "重复(保留末帧)";
 
         public override string screenId => ScreenName;
 
@@ -50,11 +50,11 @@ namespace VamTimeline
             prefabFactory.CreateHeader("Speed", 1);
             InitSpeedUI();
 
-            prefabFactory.CreateHeader("Options", 1);
+            prefabFactory.CreateHeader("选项", 1);
             InitLoopUI();
             InitSelfBlendUI();
 
-            prefabFactory.CreateHeader("Length", 1);
+            prefabFactory.CreateHeader("长度", 1);
             InitAnimationLengthUI();
 
             prefabFactory.CreateHeader("Advanced", 1);
@@ -74,14 +74,14 @@ namespace VamTimeline
 
         private void InitSpeedUI()
         {
-            _globalSpeedJSON = new JSONStorableFloat("Speed (Global)", 1f, val => animation.globalSpeed = val, -1f, 5f, false)
+            _globalSpeedJSON = new JSONStorableFloat("速度(全局)", 1f, val => animation.globalSpeed = val, -1f, 5f, false)
             {
                 valNoCallback = animation.globalSpeed
             };
             var globalSpeedUI = prefabFactory.CreateSlider(_globalSpeedJSON);
             globalSpeedUI.valueFormat = "F3";
 
-            _localSpeedJSON = new JSONStorableFloat("Speed (This)", 1f, val => { foreach (var clip in animation.index.ByName(current.animationSegment, current.animationName)) { clip.speed = val; } }, -1f, 5f, false)
+            _localSpeedJSON = new JSONStorableFloat("速度(本动画)", 1f, val => { foreach (var clip in animation.index.ByName(current.animationSegment, current.animationName)) { clip.speed = val; } }, -1f, 5f, false)
             {
                 valNoCallback = current.speed
             };
@@ -91,14 +91,14 @@ namespace VamTimeline
 
         private void InitWeightUI()
         {
-            _globalWeightJSON = new JSONStorableFloat("Weight (Global)", 1f, val => animation.globalWeight = val, 0f, 1f)
+            _globalWeightJSON = new JSONStorableFloat("权重(全局)", 1f, val => animation.globalWeight = val, 0f, 1f)
             {
                 valNoCallback = animation.globalWeight
             };
             var globalWeightUI = prefabFactory.CreateSlider(_globalWeightJSON);
             globalWeightUI.valueFormat = "F4";
 
-            _localWeightJSON = new JSONStorableFloat("Weight (This)", 1f, val => current.weight = val, 0f, 1f)
+            _localWeightJSON = new JSONStorableFloat("权重(本动画)", 1f, val => current.weight = val, 0f, 1f)
             {
                 valNoCallback = current.weight
             };
@@ -110,7 +110,7 @@ namespace VamTimeline
         {
             if (animation.index.useSegment)
             {
-                _segmentNameJSON = new JSONStorableString("Segment name", "", UpdateSegmentName);
+                _segmentNameJSON = new JSONStorableString("片段名称", "", UpdateSegmentName);
                 prefabFactory.CreateTextInput(_segmentNameJSON);
                 _segmentNameJSON.valNoCallback = current.animationSegment;
             }
@@ -163,7 +163,7 @@ namespace VamTimeline
         {
             if (animation.index.clipsGroupedByLayer.Count > 1)
             {
-                _layerNameJSON = new JSONStorableString("Layer name (specifies targets)", "", UpdateLayerName);
+                _layerNameJSON = new JSONStorableString("层名称(用于指定目标)", "", UpdateLayerName);
                 prefabFactory.CreateTextInput(_layerNameJSON);
                 _layerNameJSON.valNoCallback = current.animationLayer;
             }
@@ -198,7 +198,7 @@ namespace VamTimeline
 
         private void InitRenameAnimation()
         {
-            _animationNameJSON = new JSONStorableString("Animation name (group with 'group/anim')", "", UpdateAnimationName);
+            _animationNameJSON = new JSONStorableString("动画名称(用 'group/anim' 分组)", "", UpdateAnimationName);
             prefabFactory.CreateTextInput(_animationNameJSON);
             _animationNameJSON.valNoCallback = current.animationName;
         }
@@ -240,17 +240,17 @@ namespace VamTimeline
 
         private void InitAnimationLengthUI()
         {
-            _lengthModeJSON = new JSONStorableStringChooser("Length mode", new List<string> {
+            _lengthModeJSON = new JSONStorableStringChooser("长度模式", new List<string> {
                 _changeLengthModeCropExtendEnd,
                 _changeLengthModeCropExtendBegin,
                 _changeLengthModeCropExtendAtTime,
                 _changeLengthModeStretch,
                 _changeLengthModeLoop
-             }, _changeLengthModeCropExtendEnd, "Length mode");
+             }, _changeLengthModeCropExtendEnd, "长度模式");
             prefabFactory.CreatePopup(_lengthModeJSON, false, true, 350f);
 
             _lengthJSON = new JSONStorableFloat(
-                "Change length to (s)",
+                "更改长度至(秒)",
                 AtomAnimationClip.DefaultAnimationLength,
                 val =>
                 {
@@ -267,7 +267,7 @@ namespace VamTimeline
             var lengthUI = prefabFactory.CreateSlider(_lengthJSON);
             lengthUI.valueFormat = "F3";
 
-            _applyLengthUI = prefabFactory.CreateButton("Apply");
+            _applyLengthUI = prefabFactory.CreateButton("应用");
             _applyLengthUI.button.onClick.AddListener(() =>
             {
                 UpdateAnimationLength(_lengthJSON.val);
@@ -278,14 +278,14 @@ namespace VamTimeline
 
         private void InitEnsureQuaternionContinuityUI()
         {
-            _ensureQuaternionContinuity = new JSONStorableBool("Ensure quaternion continuity", true, SetEnsureQuaternionContinuity);
+            _ensureQuaternionContinuity = new JSONStorableBool("确保四元数连续性", true, SetEnsureQuaternionContinuity);
             prefabFactory.CreateToggle(_ensureQuaternionContinuity);
         }
 
         private void InitAudioSourceLinkUI()
         {
             var choicesList = GetEligibleAudioSourceAtoms();
-            _linkedAudioSourceJSON = new JSONStorableStringChooser("Audio Link", choicesList, "", "Audio Link", LinkAudioSource)
+            _linkedAudioSourceJSON = new JSONStorableStringChooser("音频链接", choicesList, "", "音频链接", LinkAudioSource)
             {
                 isStorable = false
             };
@@ -320,10 +320,10 @@ namespace VamTimeline
         private void InitLoopUI()
         {
             _loop = new JSONStorableStringChooser(
-                "Loop",
+                "循环",
                 new List<string> { _loopNotLoop, _loopLoop, _loopLoopPreserveLast },
                 _loopNotLoop,
-                "Loop",
+                "循环",
                 val =>
                 {
                     if (current.autoTransitionNext)
@@ -348,7 +348,7 @@ namespace VamTimeline
 
         private void InitSelfBlendUI()
         {
-            _loopSelfBlend = new JSONStorableFloat("Repeat: Self Blend", current?.loopBlendSelfDuration ?? 0f, val =>
+            _loopSelfBlend = new JSONStorableFloat("重复:自混合", current?.loopBlendSelfDuration ?? 0f, val =>
             {
                 current.loopBlendSelfDuration = val;
             }, 0f, 5f, false);

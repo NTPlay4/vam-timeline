@@ -1,4 +1,4 @@
-﻿namespace VamTimeline
+namespace VamTimeline
 {
     public abstract class AddScreenBase : ScreenBase
     {
@@ -21,28 +21,28 @@
 
             // Right side
 
-            CreateChangeScreenButton($"<b><</b> <i>Back to {AddAnimationsScreen.ScreenName}</i>", AddAnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", AddAnimationsScreen.ScreenName);
         }
 
         protected void InitNewClipNameUI()
         {
-            clipNameJSON = new JSONStorableString("New animation name", "", (string _) => OptionsUpdated());
+            clipNameJSON = new JSONStorableString("新动画名称", "", (string _) => OptionsUpdated());
             clipNameUI = prefabFactory.CreateTextInput(clipNameJSON);
         }
 
-        protected void InitNewLayerNameUI(string label = "New layer name")
+        protected void InitNewLayerNameUI(string label = "新层名称")
         {
             layerNameJSON = new JSONStorableString(label, "", (string _) => OptionsUpdated());
             prefabFactory.CreateTextInput(layerNameJSON);
         }
 
-        protected void InitNewSegmentNameUI(string label = "New segment name")
+        protected void InitNewSegmentNameUI(string label = "新片段名称")
         {
             segmentNameJSON = new JSONStorableString(label, "", (string _) => OptionsUpdated());
             prefabFactory.CreateTextInput(segmentNameJSON);
         }
 
-        protected void InitCreateInOtherAtomsUI(string label = "Create in other atoms")
+        protected void InitCreateInOtherAtomsUI(string label = "在其他人物上创建")
         {
             createInOtherAtomsJSON = new JSONStorableBool(label, _previousCreateInOtherAtoms, val => _previousCreateInOtherAtoms = val);
             prefabFactory.CreateToggle(createInOtherAtomsJSON);
@@ -50,17 +50,17 @@
 
         protected void InitAddAnotherUI()
         {
-            addAnotherJSON = new JSONStorableBool("Stay in this screen", _previousAddAnother, val => _previousAddAnother = val);
+            addAnotherJSON = new JSONStorableBool("停留在本界面", _previousAddAnother, val => _previousAddAnother = val);
             prefabFactory.CreateToggle(addAnotherJSON);
         }
 
         protected void InitNewPositionUI()
         {
             createPositionJSON = new JSONStorableStringChooser(
-                "Add at position",
+                "在位置添加",
                 AddAnimationOperations.Positions.all,
                 AddAnimationOperations.Positions.PositionNext,
-                "Add at position");
+                "在位置添加");
             prefabFactory.CreatePopup(createPositionJSON, false, true);
         }
 

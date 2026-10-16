@@ -13,16 +13,16 @@ namespace VamTimeline
         {
             base.Init(plugin, arg);
 
-            CreateChangeScreenButton("<b><</b> <i>Back</i>", MoreScreen.ScreenName);
+            CreateChangeScreenButton("<b><</b> <i>返回</i>", MoreScreen.ScreenName);
 
-            var createDefaultsBtn = prefabFactory.CreateButton("Save as default");
+            var createDefaultsBtn = prefabFactory.CreateButton("保存为默认");
             createDefaultsBtn.button.onClick.AddListener(() =>
             {
                 TimelineDefaults.singleton.Save();
                 SuperController.LogMessage($"Timeline: Settings saved to '{TimelineDefaults.DefaultsPath}'.");
             });
 
-            var deleteDefaultsBtn = prefabFactory.CreateButton("Delete current defaults");
+            var deleteDefaultsBtn = prefabFactory.CreateButton("删除当前默认值");
             deleteDefaultsBtn.button.onClick.AddListener(() =>
             {
                 TimelineDefaults.singleton.Delete();
@@ -38,7 +38,7 @@ namespace VamTimeline
                 currentDefaultsUI.height = 400f;
             }
 
-            prefabFactory.CreateHeader("On Disk", 2);
+            prefabFactory.CreateHeader("磁盘上的内容", 2);
             {
                 if (TimelineDefaults.singleton.Exists())
                 {
@@ -59,7 +59,7 @@ namespace VamTimeline
                 }
                 else
                 {
-                    var currentDefaultsJSON = new JSONStorableString("OnDisk", "[FILE NOT FOUND]");
+                    var currentDefaultsJSON = new JSONStorableString("OnDisk", "[文件未找到]");
                     var currentDefaultsUI = prefabFactory.CreateTextField(currentDefaultsJSON);
                     currentDefaultsUI.height = 60f;
                 }

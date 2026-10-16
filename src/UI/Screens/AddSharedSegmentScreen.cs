@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VamTimeline
 {
     public class AddSharedSegmentScreen : AddScreenBase
     {
-        public const string ScreenName = "Add shared segment";
+        public const string ScreenName = "添加共享片段";
 
         public override string screenId => ScreenName;
 
@@ -30,13 +30,13 @@ namespace VamTimeline
 
         public void InitCreateSharedSegmentUI()
         {
-            _createSharedSegmentUI = prefabFactory.CreateButton("Create shared segment");
+            _createSharedSegmentUI = prefabFactory.CreateButton("创建共享片段");
             _createSharedSegmentUI.button.onClick.AddListener(AddSharedSegment);
         }
 
         public void InitSendLayerToSharedSegmentUI()
         {
-            var sendLayerToSharedUI = prefabFactory.CreateButton("Send layer to shared segment");
+            var sendLayerToSharedUI = prefabFactory.CreateButton("将层发送到共享片段");
             sendLayerToSharedUI.button.onClick.AddListener(SendLayerToShared);
         }
 

@@ -97,7 +97,7 @@ namespace VamTimeline
             if (target.animatableRef.IsMorph())
             {
                 var morph = target.animatableRef.AsMorph();
-                CreateExpandButton(group.transform, "Reset Range", () =>
+                CreateExpandButton(group.transform, "重置范围", () =>
                 {
                     morph.ResetRange();
                     if (floatParamRef.val < floatParam.min) SetValue(floatParam.min);
@@ -105,7 +105,7 @@ namespace VamTimeline
                     SetTime(plugin.animationEditContext.clipTime, true);
                 });
 
-                CreateExpandButton(group.transform, "+ Range", () =>
+                CreateExpandButton(group.transform, "+ 范围", () =>
                 {
                     morph.IncreaseRange();
                     SetTime(plugin.animationEditContext.clipTime, true);
@@ -113,14 +113,14 @@ namespace VamTimeline
             }
             else
             {
-                CreateExpandButton(group.transform, "Range .1X", () =>
+                CreateExpandButton(group.transform, "范围 0.1X", () =>
                 {
                     floatParam.min *= 0.1f;
                     floatParam.max *= 0.1f;
                     SetTime(plugin.animationEditContext.clipTime, true);
                 }).button.interactable = !floatParam.constrained;
 
-                CreateExpandButton(group.transform, "Range 10X", () =>
+                CreateExpandButton(group.transform, "范围 10X", () =>
                 {
                     floatParam.min *= 10f;
                     floatParam.max *= 10f;
@@ -153,7 +153,7 @@ namespace VamTimeline
             {
                 if (stopped)
                 {
-                    valueText.text = "[Unavailable]";
+                    valueText.text = "[不可用]";
                 }
                 return;
             }

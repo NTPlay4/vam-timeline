@@ -1,10 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 
 namespace VamTimeline
 {
     public class AddClipScreen : AddScreenBase
     {
-        public const string ScreenName = "Add animation";
+        public const string ScreenName = "添加单个动画";
 
         private JSONStorableBool _copySettingsJSON;
         private JSONStorableBool _copyKeyframesJSON;
@@ -24,7 +24,7 @@ namespace VamTimeline
 
             // Right side
 
-            prefabFactory.CreateHeader("Create animation", 1);
+            prefabFactory.CreateHeader("创建动画", 1);
 
             InitNewClipNameUI();
             InitNewPositionUI();
@@ -46,15 +46,15 @@ namespace VamTimeline
             prefabFactory.CreateSpacer();
             prefabFactory.CreateHeader("More", 1);
 
-            CreateChangeScreenButton("<i><b>Import</b> from file...</i>", ImportExportScreen.ScreenName);
-            CreateChangeScreenButton("<i><b>Manage/reorder</b> animations...</i>", ManageAnimationsScreen.ScreenName);
+            CreateChangeScreenButton("<i>从文件<b>导入</b>...</i>", ImportExportScreen.ScreenName);
+            CreateChangeScreenButton("<i><b>管理 / 排序</b>动画...</i>", ManageAnimationsScreen.ScreenName);
 
             RefreshUI();
         }
 
         private void InitCreateAnimationUI()
         {
-            _createNewUI = prefabFactory.CreateButton("<b>Create animation</b>");
+            _createNewUI = prefabFactory.CreateButton("<b>创建动画</b>");
             _createNewUI.button.onClick.AddListener(AddAnimation);
         }
 
@@ -66,13 +66,13 @@ namespace VamTimeline
 
         private void InitSplitAtScubberUI()
         {
-            _splitAtScrubberUI = prefabFactory.CreateButton("Split at scrubber position");
+            _splitAtScrubberUI = prefabFactory.CreateButton("在当前位置拆分");
             _splitAtScrubberUI.button.onClick.AddListener(SplitAnimationAtScrubber);
         }
 
         private void InitCopySettings()
         {
-            _copySettingsJSON = new JSONStorableBool("Copy settings", false, val =>
+            _copySettingsJSON = new JSONStorableBool("复制设置", false, val =>
             {
                 if (!val) _copyKeyframesJSON.valNoCallback = false;
             });
@@ -81,7 +81,7 @@ namespace VamTimeline
 
         private void InitCopyKeyframes()
         {
-            _copyKeyframesJSON = new JSONStorableBool("Copy keyframes", false, val =>
+            _copyKeyframesJSON = new JSONStorableBool("复制关键帧", false, val =>
             {
                 if (val) _copySettingsJSON.valNoCallback = true;
             });
@@ -90,19 +90,19 @@ namespace VamTimeline
 
         private void InitSequenceTo()
         {
-            _sequenceToJSON = new JSONStorableBool("Sequence current to new", false);
+            _sequenceToJSON = new JSONStorableBool("将当前序列化到新动画", false);
             prefabFactory.CreateToggle(_sequenceToJSON);
         }
 
         private void InitCreateOnAllLayers()
         {
-            _createOnAllLayersJSON = new JSONStorableBool("Create on all layers", false);
+            _createOnAllLayersJSON = new JSONStorableBool("在所有层上创建", false);
             prefabFactory.CreateToggle(_createOnAllLayersJSON);
         }
 
         private void InitMergeUI()
         {
-            var mergeUI = prefabFactory.CreateButton("Merge with next animation");
+            var mergeUI = prefabFactory.CreateButton("与下一个动画合并");
             mergeUI.button.onClick.AddListener(MergeWithNext);
         }
 
@@ -223,11 +223,11 @@ namespace VamTimeline
             }
             _addAnimationTransitionUI.button.interactable = hasNext && !nextIsTransition;
             if (!hasNext)
-                _addAnimationTransitionUI.label = "Create Transition (No sequence)";
+                _addAnimationTransitionUI.label = "创建转场(无序列)";
             else if (nextIsTransition)
-                _addAnimationTransitionUI.label = "Create Transition (Next is transition)";
+                _addAnimationTransitionUI.label = "创建转场(下一个是转场)";
             else
-                _addAnimationTransitionUI.label = "Create Transition (Current -> Next)";
+                _addAnimationTransitionUI.label = "创建转场(当前 -> 下一个)";
         }
 
         #endregion

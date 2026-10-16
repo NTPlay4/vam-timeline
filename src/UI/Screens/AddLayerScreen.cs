@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Leap.Unity;
 using UnityEngine.UI;
@@ -7,7 +7,7 @@ namespace VamTimeline
 {
     public class AddLayerScreen : AddScreenBase
     {
-        public const string ScreenName = "Add layer";
+        public const string ScreenName = "添加层";
 
         public override string screenId => ScreenName;
 
@@ -23,7 +23,7 @@ namespace VamTimeline
             base.Init(plugin, arg);
 
             prefabFactory.CreateSpacer();
-            prefabFactory.CreateHeader("Create layer", 1);
+            prefabFactory.CreateHeader("创建层", 1);
 
             InitNewClipNameUI();
             InitNewLayerNameUI();
@@ -40,7 +40,7 @@ namespace VamTimeline
 
         private void InitCreateAllAnimationsUI()
         {
-            _createAllAnimationsJSON = new JSONStorableBool("Same layer animations", false, val =>
+            _createAllAnimationsJSON = new JSONStorableBool("同层动画", false, val =>
             {
                 if (val) clipNameJSON.val = current.animationName;
             });
@@ -49,13 +49,13 @@ namespace VamTimeline
 
         private void InitCreateLayerUI()
         {
-            _createLayerUI = prefabFactory.CreateButton("<b>Create new layer</b>");
+            _createLayerUI = prefabFactory.CreateButton("<b>创建新层</b>");
             _createLayerUI.button.onClick.AddListener(AddLayer);
         }
 
         private void InitSplitLayerUI()
         {
-            _splitLayerUI = prefabFactory.CreateButton("<b>Split targets to new layer</b>");
+            _splitLayerUI = prefabFactory.CreateButton("<b>拆分目标到新层</b>");
             _splitLayerUI.button.onClick.AddListener(SplitLayer);
         }
 
@@ -111,7 +111,7 @@ namespace VamTimeline
             var selected = animationEditContext.GetSelectedTargets().ToList();
             if (selected.Count == 0)
             {
-                _splitLayerUI.label = "Split targets to new layer";
+                _splitLayerUI.label = "拆分目标到新层";
                 clipNameUI.GetComponent<InputField>().interactable = true;
                 clipNameJSON.val = current.animationName;
                 layerNameJSON.val = animation.GetUniqueLayerName(current, current.animationLayer == "Main" ? "Layer 1" : null);
@@ -121,7 +121,7 @@ namespace VamTimeline
             else
             {
                 _splitLayerUI.label = $"Split {selected.Count} targets to new layer";
-                clipNameJSON.val = "[AUTO]";
+                clipNameJSON.val = "[自动]";
                 clipNameUI.GetComponent<InputField>().interactable = false;
                 layerNameJSON.val = animation.GetUniqueLayerName(current, SuggestName(selected));
                 _createAllAnimationsJSON.val = true;
