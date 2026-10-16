@@ -57,6 +57,12 @@ namespace VamTimeline
             get { return _showPaths; }
             set { _showPaths = value; onEditorSettingsChanged.Invoke(nameof(showPaths)); }
         }
+        private bool _zoomHandlesEnabled = true;
+        public bool zoomHandlesEnabled
+        {
+            get { return _zoomHandlesEnabled; }
+            set { _zoomHandlesEnabled = value; onEditorSettingsChanged.Invoke(nameof(zoomHandlesEnabled)); }
+        }
         private bool _locked;
         public bool locked
         {

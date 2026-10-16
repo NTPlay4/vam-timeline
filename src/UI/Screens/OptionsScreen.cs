@@ -50,6 +50,7 @@ namespace VamTimeline
             prefabFactory.CreateHeader("UI Options", 1);
 
             InitShowPathsUI();
+            InitZoomHandlesUI();
 
             prefabFactory.CreateHeader("Serialization Options", 1);
 
@@ -132,6 +133,14 @@ namespace VamTimeline
                 "Show selected controllers paths", animationEditContext.showPaths,
                 val => animationEditContext.showPaths = val);
             prefabFactory.CreateToggle(_showPaths);
+        }
+
+        private void InitZoomHandlesUI()
+        {
+            var zoomHandlesJSON = new JSONStorableBool(
+                "Show zoom handles (drag both sides to resize range)", animationEditContext.zoomHandlesEnabled,
+                val => animationEditContext.zoomHandlesEnabled = val);
+            prefabFactory.CreateToggle(zoomHandlesJSON);
         }
 
         private void InitIgnoreSequencing()

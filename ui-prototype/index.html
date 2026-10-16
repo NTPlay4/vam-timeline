@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VamTimeline UI 原型 (optimize-custom)</title>
+<style>
+  /* ===== 可随时调整的全局参数 ===== */
+  :root {
+    --bg: #1b1d22;
+    --panel: #24272e;
+    --panel-2: #2c3038;
+    --border: #3a3f49;
+    --text: #d7dbe0;
+    --text-dim: #8a909a;
+    --accent: #4ea1ff;
+    --accent-2: #ffb454;
+    --danger: #ff5d5d;
+    --keyframe: #ffd24a;
+    --row-h: 26px;
+    --header-h: 38px;
+    --left-w: 62%;      /* 左侧时间轴宽度 */
+    --right-w: 38%;     /* 右侧 target 面板宽度 */
+    --track-h: calc(var(--row-h) * 9); /* 时间轴可视高度 */
+    --px-per-sec: 240px; /* 时间轴缩放:可通过下方滑块调整 */
+    --radius: 5px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+    display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+  }
+
+  /* ===== 顶部标签栏 ===== */
+  header {
+    height: var(--header-h); flex: 0 0 auto;
+    display: flex; align-items: center; gap: 4px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: 0 10px;
+  }
+  header .title { font-weight: 600; color: var(--accent); margin-right: 14px; }
+  header .title small { color: var(--text-dim); font-weight: 400; }
+  .tab {
+    padding: 6px 12px; border-radius: var(--radius); cursor: pointer;
+    color: var(--text-dim); user-select: none; border: 1px solid transparent;
+  }
+  .tab:hover { background: var(--panel-2); color: var(--text); }
+  .tab.active { background: var(--panel-2); color: var(--accent); border-color: var(--border); }
+  header .spacer { flex: 1; }
+  header .lock { font-size: 11px; color: var(--text-dim); }
+
+  /* ===== 主体:左右分栏 ===== */
+  main { flex: 1; display: flex; min-height: 0; }
+  .left { width: var(--left-w); display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--border); }
+  .right { width: var(--right-w); display: flex; flex-direction: column; min-width: 0; }
+
+  .bar {
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+    background: var(--panel); border-bottom: 1px solid var(--border); flex: 0 0 auto;
+  }
+  .bar .ctrl {
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: var(--radius); padding: 3px 8px; cursor: pointer; font-size: 12px;
+  }
+  .bar .ctrl:hover { border-color: var(--accent); }
+  select.ctrl { padding: 3px 6px; }
+  .time { font-variant-numeric: tabular-nums; color: var(--accent-2); }
+  .bar .grow { flex: 1; }
+  input[type=range] { accent-color: var(--accent); }
+
+  /* ===== DopeSheet / 时间轴 ===== */
+  .timeline-wrap { flex: 1; overflow: auto; position: relative; background: var(--panel); }
+  .track-header { width: 150px; flex: 0 0 150px; }
+  .timeline { display: flex; min-height: 100%; }
+  .labels { width: 150px; flex: 0 0 150px; border-right: 1px solid var(--border); background: var(--panel-2); position: sticky; left: 0; z-index: 2; }
+  .labels .grp { padding: 4px 8px; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  .labels .row { height: var(--row-h); display: flex; align-items: center; padding: 0 8px; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .labels .row.sel { background: #33415a; color: var(--accent); }
+
+  .ruler { height: 20px; position: sticky; top: 0; z-index: 3; background: var(--panel-2); border-bottom: 1px solid var(--border); }
+  .ruler .tick { position: absolute; top: 0; height: 100%; border-left: 1px solid var(--border); color: var(--text-dim); font-size: 10px; padding-left: 2px; }
+
+  .tracks { position: relative; flex: 1; }
+  .tracks .group-gap { height: 18px; }
+  .tline { height: var(--row-h); position: relative; border-bottom: 1px solid var(--border); }
+  .tline:hover { background: rgba(255,255,255,.03); }
+  .tline.sel { background: rgba(78,161,255,.08); }
+  .kf {
+    position: absolute; top: 50%; width: 11px; height: 11px; margin: -6px 0 0 -6px;
+    background: var(--keyframe); transform: rotate(45deg);
+    border: 1px solid #00000055; cursor: pointer;
+  }
+  .kf.sel { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-2); }
+
+  .playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent-2); z-index: 4; pointer-events: none; }
+  .playhead::before { content: ""; position: absolute; top: 0; left: -5px; border: 6px solid transparent; border-top-color: var(--accent-2); }
+
+  /* ===== 右侧 target 列表 ===== */
+  .panel-head { padding: 7px 10px; background: var(--panel); border-bottom: 1px solid var(--border); font-weight: 600; display:flex; justify-content: space-between; align-items:center;}
+  .target-list { flex: 1; overflow: auto; padding: 6px; }
+  .target-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; }
+  .target-item .name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .target-item .val { color: var(--accent-2); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .target-item .rm { color: var(--danger); cursor: pointer; border: none; background: none; font-size: 14px; }
+  .right .foot { padding: 8px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .btn { flex: 1; padding: 7px; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius); cursor: pointer; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: #2b4a73; border-color: var(--accent); color: #cfe6ff; }
+
+  .hint { color: var(--text-dim); font-size: 11px; padding: 6px 10px; }
+  .chk { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
+
+  /* ===== 其它 Screen 占位 ===== */
+  .screen { display: none; flex: 1; overflow: auto; padding: 12px; }
+  .screen.active { display: block; }
+
+  /* ===== 缩放范围条 (对应 Zoom 组件) ===== */
+  .zoombar { position: relative; height: 22px; margin: 0 6px 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .zoombar .zfull { position: absolute; inset: 0; }
+  .zoombar .zwin { position: absolute; top: 0; bottom: 0; background: rgba(78,161,255,.22); border-left: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .zoombar .zhdl, .zoombar .zhdr { position: absolute; top: 0; bottom: 0; width: 8px; background: var(--accent); cursor: ew-resize; }
+  .zoombar .zhdl { left: -2px; } .zoombar .zhdr { right: -2px; }
+  .zoombar.no-handles .zhdl, .zoombar.no-handles .zhdr { display: none; }
+  .zoombar.no-handles .zwin { border-left-color: var(--text-dim); border-right-color: var(--text-dim); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 12px; }
+  .card h3 { margin: 0 0 10px; font-size: 13px; color: var(--accent); }
+  .field { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .field label { width: 140px; color: var(--text-dim); }
+  .pill { display:inline-block; padding:2px 8px; border:1px solid var(--border); border-radius: 10px; margin: 3px; cursor:pointer; }
+  .pill:hover { border-color: var(--accent); }
+  .pill.rm { color: var(--danger); }
+</style>
+</head>
+<body>
+  <header>
+    <div class="title">VamTimeline <small>UI 原型 · optimize-custom</small></div>
+    <div class="tab active" data-screen="edit">Edit</div>
+    <div class="tab" data-screen="targets">Targets</div>
+    <div class="tab" data-screen="sequencing">Sequencing</div>
+    <div class="tab" data-screen="more">More</div>
+    <div class="spacer"></div>
+    <div class="lock">🔒 Locked (Performance)</div>
+  </header>
+
+  <main>
+    <!-- ============ 左侧:时间轴 (Edit Screen) ============ -->
+    <section class="left" id="screen-edit">
+      <div class="bar">
+        <button class="ctrl">⏮</button>
+        <button class="ctrl" id="playBtn">⏯</button>
+        <button class="ctrl">⏹</button>
+        <span class="time" id="timeReadout">0.00 / 2.00s</span>
+        <span style="color:var(--text-dim)">Animation</span>
+        <select class="ctrl"><option>Anim 1</option><option>Idle</option><option>Walk</option></select>
+        <div class="grow"></div>
+        <span style="color:var(--text-dim)">Speed</span>
+        <input type="range" min="0" max="2" step="0.05" value="1" style="width:90px">
+        <span style="color:var(--text-dim)">Zoom</span>
+        <input type="range" id="zoom" min="80" max="600" step="10" value="240" style="width:90px">
+      </div>
+
+      <div class="timeline-wrap" id="timelineWrap">
+        <div class="timeline">
+          <div class="labels" id="labels">
+            <div class="grp">Controllers</div>
+            <!-- 行由 JS 生成 -->
+          </div>
+          <div class="tracks" id="tracks">
+            <div class="ruler" id="ruler"></div>
+            <div class="playhead" id="playhead" style="left:150px"></div>
+            <!-- 轨道由 JS 生成 -->
+          </div>
+        </div>
+      </div>
+
+      <div class="zoombar" id="zoombar" title="缩放范围条:高亮区=当前可见区间,两端手柄可拖动(由 Options 里的开关控制)">
+        <div class="zfull"></div>
+        <div class="zwin" id="zwin"><div class="zhdl" id="zhdl"></div><div class="zhdr" id="zhdr"></div></div>
+      </div>
+
+      <div class="bar">
+        <button class="ctrl">Change Curve ▾</button>
+        <span class="hint">Select targets in the dope sheet to see their curves</span>
+        <div class="grow"></div>
+        <button class="ctrl">✂ Cut</button>
+        <button class="ctrl">⧉ Copy</button>
+        <button class="ctrl">▣ Paste</button>
+        <label class="chk"><input type="checkbox" checked> Auto Keyframe</label>
+        <button class="ctrl" id="modeBtn">View: DopeSheet</button>
+      </div>
+    </section>
+
+    <!-- ============ 右侧:Selected targets ============ -->
+    <aside class="right" id="rightPanel">
+      <div class="panel-head"><span>Selected targets</span><span id="targetCount" style="color:var(--text-dim)">0</span></div>
+      <div class="target-list" id="targetList"></div>
+      <div class="foot">
+        <button class="btn" id="addTarget">+ / − Add / Remove Targets</button>
+      </div>
+    </aside>
+
+    <!-- ============ Targets Screen ============ -->
+    <section class="screen" id="screen-targets" style="flex:1">
+      <div class="card">
+        <h3>Add controllers</h3>
+        <div class="field"><label>Filter</label><input class="ctrl" style="flex:1" placeholder="search controllers…"></div>
+        <div id="ctrlPills"></div>
+      </div>
+      <div class="card">
+        <h3>Add float params</h3>
+        <div id="floatPills"></div>
+      </div>
+      <div class="card">
+        <h3>Current targets (click ✕ to remove)</h3>
+        <div id="currentTargets"></div>
+      </div>
+    </section>
+
+    <!-- ============ Sequencing Screen ============ -->
+    <section class="screen" id="screen-sequencing">
+      <div class="card">
+        <h3>Transition</h3>
+        <div class="field"><label>Next animation</label>
+          <select class="ctrl"><option>None</option><option>Idle</option><option>Walk</option></select></div>
+        <div class="field"><label>Blend duration</label><input type="range" min="0" max="2" step="0.05" value="1" style="width:200px"><span class="time">1.00s</span></div>
+        <div class="field"><label>Loop</label><input type="checkbox" checked></div>
+        <div class="field"><label>Auto transition</label><input type="checkbox"></div>
+        <div class="field"><label>Uninterruptible</label><input type="checkbox"></div>
+      </div>
+    </section>
+
+    <!-- ============ More Screen ============ -->
+    <section class="screen" id="screen-more">
+      <div class="card"><h3>Performance</h3>
+        <div class="field"><label>Reduced FPS</label><input type="checkbox"></div>
+        <div class="field"><label>Hide paths</label><input type="checkbox"></div>
+      </div>
+      <div class="card"><h3>Options</h3>
+        <div class="field"><label>Snap</label><input type="checkbox" checked></div>
+        <div class="field"><label>Show paths</label><input type="checkbox"></div>
+        <div class="field"><label>Show zoom handles</label><input type="checkbox" id="zoomHandlesChk" checked></div>
+      </div>
+    </section>
+  </main>
+
+<script>
+  // ===== 数据模型(模拟真实 clip 的 targets 与关键帧) =====
+  const LENGTH = 2.0; // 秒
+  const controllers = [
+    { name: "chest", keys: [0, 0.5, 1.0, 1.5, 2.0] },
+    { name: "head",  keys: [0, 1.0, 2.0] },
+    { name: "hip",   keys: [0, 0.8, 1.6, 2.0] },
+    { name: "lHand", keys: [0, 1.0, 2.0] },
+    { name: "rHand", keys: [0, 0.3, 1.2, 2.0] },
+  ];
+  const floats = [
+    { name: "BreastPhysics", keys: [0, 1.0, 2.0] },
+    { name: "Penetration",   keys: [0, 0.5, 1.5, 2.0] },
+  ];
+  let selectedTargets = ["chest", "hip", "BreastPhysics"];
+
+  const pps = () => parseFloat(document.getElementById('zoom').value); // px per second
+  const trackLeft = () => 150; // labels 宽度
+
+  function buildTimeline() {
+    const labels = document.getElementById('labels');
+    const tracks = document.getElementById('tracks');
+    // 清空(保留 ruler / playhead)
+    [...labels.querySelectorAll('.grp, .row')].forEach(e => e.remove());
+    [...tracks.querySelectorAll('.tline, .group-gap')].forEach(e => e.remove());
+
+    // ruler
+    const ruler = document.getElementById('ruler');
+    ruler.innerHTML = '';
+    const w = pps() * LENGTH + trackLeft();
+    ruler.style.width = w + 'px';
+    for (let t = 0; t <= LENGTH + 1e-6; t += 0.5) {
+      const tick = document.createElement('div');
+      tick.className = 'tick';
+      tick.style.left = (trackLeft() + t * pps()) + 'px';
+      tick.textContent = t.toFixed(1);
+      ruler.appendChild(tick);
+    }
+
+    const makeRows = (items, isController) => {
+      items.forEach(it => {
+        const lab = document.createElement('div');
+        lab.className = 'row' + (selectedTargets.includes(it.name) ? ' sel' : '');
+        lab.textContent = it.name;
+        lab.onclick = () => toggleTarget(it.name);
+        labels.appendChild(lab);
+
+        const line = document.createElement('div');
+        line.className = 'tline' + (selectedTargets.includes(it.name) ? ' sel' : '');
+        line.dataset.name = it.name;
+        it.keys.forEach(t => {
+          const kf = document.createElement('div');
+          kf.className = 'kf';
+          kf.style.left = (trackLeft() + t * pps()) + 'px';
+          kf.title = it.name + ' @ ' + t.toFixed(2) + 's';
+          kf.onclick = (e) => { e.stopPropagation(); selectKeyframe(kf); };
+          line.appendChild(kf);
+        });
+        line.onclick = () => selectLine(line);
+        tracks.appendChild(line);
+      });
+    };
+    makeRows(controllers, true);
+    const gap = document.createElement('div'); gap.className = 'group-gap'; tracks.appendChild(gap);
+    const gl = document.createElement('div'); gl.className = 'grp'; gl.textContent = 'Float Params'; labels.appendChild(gl);
+    makeRows(floats, false);
+
+    updatePlayhead();
+  }
+
+  function updatePlayhead() {
+    const cur = parseFloat(document.getElementById('timeReadout').dataset.cur || 0);
+    document.getElementById('playhead').style.left = (trackLeft() + cur * pps()) + 'px';
+  }
+
+  function toggleTarget(name) {
+    if (selectedTargets.includes(name)) selectedTargets = selectedTargets.filter(n => n !== name);
+    else selectedTargets.push(name);
+    buildTimeline(); renderTargets();
+  }
+  function selectLine(line) { document.querySelectorAll('.tline').forEach(l => l.classList.remove('sel')); line.classList.add('sel'); }
+  function selectKeyframe(kf) { document.querySelectorAll('.kf').forEach(k => k.classList.remove('sel')); kf.classList.add('sel'); }
+
+  function renderTargets() {
+    const list = document.getElementById('targetList');
+    list.innerHTML = '';
+    document.getElementById('targetCount').textContent = selectedTargets.length;
+    selectedTargets.forEach(name => {
+      const item = document.createElement('div'); item.className = 'target-item';
+      const val = (Math.random() * 2 - 1).toFixed(2);
+      item.innerHTML = `<span class="name">${name}</span><span class="val">${val}</span><button class="rm">✕</button>`;
+      item.querySelector('.rm').onclick = () => toggleTarget(name);
+      list.appendChild(item);
+    });
+  }
+
+  // ===== 播放头拖拽 =====
+  const wrap = document.getElementById('timelineWrap');
+  const tracks = document.getElementById('tracks');
+  let dragging = false;
+  function setTimeFromX(clientX) {
+    const rect = tracks.getBoundingClientRect();
+    let x = clientX - rect.left - trackLeft();
+    let t = Math.max(0, Math.min(LENGTH, x / pps()));
+    document.getElementById('timeReadout').dataset.cur = t;
+    document.getElementById('timeReadout').textContent = t.toFixed(2) + ' / ' + LENGTH.toFixed(2) + 's';
+    updatePlayhead();
+  }
+  tracks.addEventListener('pointerdown', (e) => { if (e.target.classList.contains('kf')) return; dragging = true; setTimeFromX(e.clientX); });
+  window.addEventListener('pointermove', (e) => { if (dragging) setTimeFromX(e.clientX); });
+  window.addEventListener('pointerup', () => dragging = false);
+
+  // ===== Zoom =====
+  document.getElementById('zoom').addEventListener('input', () => { buildTimeline(); updateZoomBar(); });
+
+  // ===== 模式切换 (DopeSheet / Curves 仅原型提示) =====
+  document.getElementById('modeBtn').onclick = function () {
+    const on = this.textContent.includes('DopeSheet');
+    this.textContent = on ? 'View: Curves' : 'View: DopeSheet';
+    alert(on ? '曲线视图:此处后续替换为 Curves.cs 的贝塞尔曲线绘制' : '已切回关键帧(DopeSheet)视图');
+  };
+
+  // ===== Tabs =====
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const s = tab.dataset.screen;
+      ['edit','targets','sequencing','more'].forEach(name => {
+        const el = document.getElementById('screen-' + name);
+        if (name === s) { el.classList.add('active'); el.style.display = (name==='edit') ? 'flex' : 'block'; }
+        else { el.classList.remove('active'); el.style.display = 'none'; }
+      });
+      // edit 时显示左右分栏,其它 screen 占满
+      document.getElementById('rightPanel').style.display = (s === 'edit') ? 'flex' : 'none';
+    };
+  });
+
+  // ===== Targets screen 占位 =====
+  function buildPills() {
+    const cp = document.getElementById('ctrlPills');
+    controllers.concat(floats).forEach(c => {
+      const p = document.createElement('span'); p.className = 'pill'; p.textContent = '+ ' + c.name;
+      p.onclick = () => toggleTarget(c.name);
+      cp.appendChild(p);
+    });
+    const ct = document.getElementById('currentTargets');
+    selectedTargets.forEach(n => {
+      const p = document.createElement('span'); p.className = 'pill rm'; p.textContent = '✕ ' + n;
+      p.onclick = () => toggleTarget(n);
+      ct.appendChild(p);
+    });
+  }
+
+  // ===== 缩放范围条 (可视化 zoomHandles 开关) =====
+  let zoomHandles = true;
+  function updateZoomBar() {
+    const w = LENGTH * (240 / pps());          // 可见区间时长(随 Zoom 滑块)
+    const left = (LENGTH - w) / 2;
+    const zwin = document.getElementById('zwin');
+    zwin.style.left = (left / LENGTH * 100) + '%';
+    zwin.style.width = (w / LENGTH * 100) + '%';
+  }
+  document.getElementById('zoomHandlesChk').addEventListener('change', function () {
+    zoomHandles = this.checked;
+    document.getElementById('zoombar').classList.toggle('no-handles', !zoomHandles);
+  });
+  // 拖两端手柄改变区间(仅当开关开启)
+  let dragHandle = null;
+  ['zhdl', 'zhdr'].forEach(id => {
+    const h = document.getElementById(id);
+    h.addEventListener('pointerdown', e => { if (!zoomHandles) return; e.stopPropagation(); dragHandle = id; h.setPointerCapture(e.pointerId); });
+    h.addEventListener('pointerup', () => dragHandle = null);
+  });
+  document.getElementById('zoombar').addEventListener('pointermove', e => {
+    if (!dragHandle || !zoomHandles) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const t = Math.max(0, Math.min(LENGTH, (e.clientX - r.left) / r.width * LENGTH));
+    const zwin = document.getElementById('zwin');
+    let left = parseFloat(zwin.style.left) / 100 * LENGTH;
+    let right = left + parseFloat(zwin.style.width) / 100 * LENGTH;
+    if (dragHandle === 'zhdl') left = Math.min(t, right - 0.05);
+    else right = Math.max(t, left + 0.05);
+    zwin.style.left = (left / LENGTH * 100) + '%';
+    zwin.style.width = ((right - left) / LENGTH * 100) + '%';
+  });
+
+  // ===== 初始化 =====
+  buildTimeline();
+  renderTargets();
+  buildPills();
+  updateZoomBar();
+</script>
+</body>
+</html>

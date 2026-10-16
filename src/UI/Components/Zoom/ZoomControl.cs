@@ -69,9 +69,9 @@ namespace VamTimeline
 
             var insidePadding = style.ClickablePadding * (endX - startX) / actualSize.width;
 
-            if (_origClickedX < startX + insidePadding)
+            if (animationEditContext.zoomHandlesEnabled && _origClickedX < startX + insidePadding)
                 _mode = ZoomStateModes.ResizeBeginMode;
-            else if (_origClickedX > endX - insidePadding)
+            else if (animationEditContext.zoomHandlesEnabled && _origClickedX > endX - insidePadding)
                 _mode = ZoomStateModes.ResizeEndMode;
             else
                 _mode = ZoomStateModes.MoveMode;
